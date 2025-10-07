@@ -2,6 +2,7 @@ import Country from '#models/country'
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 
 export default class extends BaseSeeder {
+  static environment = ['development', 'testing']
   async run() {
     Country.createMany([
       {
@@ -101,6 +102,34 @@ export default class extends BaseSeeder {
         iso: 'TH',
         timezone: 'Asia/Bangkok',
         capital: 'Bangkok',
+      },
+      {
+        name: 'Malaisie',
+        slug: 'malaisie',
+        iso: 'MY',
+        timezone: 'Asia/Kuala_Lumpur',
+        capital: 'Kuala Lumpur',
+      },
+      {
+        name: 'Japon',
+        slug: 'japon',
+        iso: 'JP',
+        timezone: 'Asia/Tokyo',
+        capital: 'Tokyo',
+      },
+      {
+        name: 'Australie',
+        slug: 'australie',
+        iso: 'AU',
+        timezone: 'Australia/Sydney',
+        capital: 'Sydney',
+      },
+      {
+        name: 'Autriche',
+        slug: 'autriche',
+        iso: 'AT',
+        timezone: 'Europe/Vienna',
+        capital: 'Vienna',
       },
     ])
   }

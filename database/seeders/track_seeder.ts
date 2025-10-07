@@ -1,24 +1,72 @@
+import Country from '#models/country'
 import Track from '#models/track'
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 
 export default class extends BaseSeeder {
+  static environment = ['development', 'testing']
+
   async run() {
-    const france = await Track.findByOrFail('slug', 'france')
-    const espagne = await Track.findByOrFail('slug', 'espagne')
-    const italie = await Track.findByOrFail('slug', 'italie')
-    const amerique = await Track.findByOrFail('slug', 'amerique')
-    const allemagne = await Track.findByOrFail('slug', 'allemagne')
-    const portugal = await Track.findByOrFail('slug', 'portugal')
-    const qatar = await Track.findByOrFail('slug', 'qatar')
-    const malaisie = await Track.findByOrFail('slug', 'malaisie')
-    const paysBas = await Track.findByOrFail('slug', 'pays-bas')
-    const angleterre = await Track.findByOrFail('slug', 'angleterre')
-    const autriche = await Track.findByOrFail('slug', 'autriche')
-    const indonesie = await Track.findByOrFail('slug', 'indonesie')
-    const japon = await Track.findByOrFail('slug', 'japon')
-    const australie = await Track.findByOrFail('slug', 'australie')
-    const thailande = await Track.findByOrFail('slug', 'thailande')
-    // Write your database queries inside the run method
+    const france = await Country.findBy('slug', 'france')
+    if (!france) {
+      throw new Error('Country France not found. Please run CountrySeeder first.')
+    }
+    const espagne = await Country.findBy('slug', 'espagne')
+    if (!espagne) {
+      throw new Error('Country Espagne not found. Please run CountrySeeder first.')
+    }
+    const italie = await Country.findBy('slug', 'italie')
+    if (!italie) {
+      throw new Error('Country Italie not found. Please run CountrySeeder first.')
+    }
+    const amerique = await Country.findBy('slug', 'amerique')
+    if (!amerique) {
+      throw new Error('Country Amerique not found. Please run CountrySeeder first.')
+    }
+    const allemagne = await Country.findBy('slug', 'allemagne')
+    if (!allemagne) {
+      throw new Error('Country Allemagne not found. Please run CountrySeeder first.')
+    }
+    const portugal = await Country.findBy('slug', 'portugal')
+    if (!portugal) {
+      throw new Error('Country Portugal not found. Please run CountrySeeder first.')
+    }
+    const qatar = await Country.findBy('slug', 'qatar')
+    if (!qatar) {
+      throw new Error('Country Qatar not found. Please run CountrySeeder first.')
+    }
+    const malaisie = await Country.findBy('slug', 'malaisie')
+    if (!malaisie) {
+      throw new Error('Country Malaisie not found. Please run CountrySeeder first.')
+    }
+    const paysBas = await Country.findBy('slug', 'pays-bas')
+    if (!paysBas) {
+      throw new Error('Country Pays-Bas not found. Please run CountrySeeder first.')
+    }
+    const angleterre = await Country.findBy('slug', 'angleterre')
+    if (!angleterre) {
+      throw new Error('Country Angleterre not found. Please run CountrySeeder first.')
+    }
+    const autriche = await Country.findBy('slug', 'autriche')
+    if (!autriche) {
+      throw new Error('Country Autriche not found. Please run CountrySeeder first.')
+    }
+    const indonesie = await Country.findBy('slug', 'indonesie')
+    if (!indonesie) {
+      throw new Error('Country Indonesie not found. Please run CountrySeeder first.')
+    }
+    const japon = await Country.findBy('slug', 'japon')
+    if (!japon) {
+      throw new Error('Country Japon not found. Please run CountrySeeder first.')
+    }
+    const australie = await Country.findBy('slug', 'australie')
+    if (!australie) {
+      throw new Error('Country Australie not found. Please run CountrySeeder first.')
+    }
+    const thailande = await Country.findBy('slug', 'thailand')
+    if (!thailande) {
+      throw new Error('Country Thailande not found. Please run CountrySeeder first.')
+    }
+
     await Track.createMany([
       {
         name: 'Nogaro',
@@ -323,6 +371,18 @@ export default class extends BaseSeeder {
         width: 12,
         maxDb: 118,
         bestLapTime: '1:29.401',
+      },
+      {
+        name: 'Circuit Paul Ricard',
+        slug: 'circuit-paul-ricard',
+        countryId: france.id,
+        city: 'Le Castellet',
+        address: 'Le Castellet, 83330 Le Castellet, France',
+        turns: '15 (6 à gauche, 9 à droite)',
+        length: 5800,
+        width: 12,
+        maxDb: 118,
+        bestLapTime: '1:32.740',
       },
     ])
   }

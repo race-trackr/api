@@ -3,15 +3,15 @@ import Track from '#models/track'
 
 export default class TracksController {
   async index({ request, response }: HttpContext) {
-    const { countryId } = request.qs()
+    const { expand } = request.qs()
 
-    const query = Track.query().preload('country').orderBy('name', 'asc')
-
-    if (countryId) {
-      query.where('country_id', countryId)
+    if (expand === 'country') {
+      const tracks = await Track.query().preload('country').orderBy('name', 'asc')
+      return response.ok(tracks)
     }
 
-    const tracks = await query
+    const tracks = await Track.query().orderBy('name', 'asc')
+
     return response.ok(tracks)
   }
 
@@ -35,8 +35,15 @@ export default class TracksController {
     return response.created(track)
   }
 
-  async show({ params, response }: HttpContext) {
-    const track = await Track.query().where('id', params.id).preload('country').firstOrFail()
+  async show({ request, params, response }: HttpContext) {
+    const { id } = params
+    // check if expand with country param in query string
+    const { expand } = request.qs()
+    if (expand === 'country') {
+      const track = await Track.query().where('id', id).preload('country').firstOrFail()
+      return response.ok(track)
+    }
+    const track = await Track.query().where('id', params.id).firstOrFail()
     return response.ok(track)
   }
 

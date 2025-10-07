@@ -5,8 +5,14 @@ import Maintenance from '#models/maintenance'
 import { DateTime } from 'luxon'
 
 export default class extends BaseSeeder {
+  static environment = ['development', 'testing']
+
   async run() {
-    const user = await User.findByOrFail('email', 'user@example.com')
+    const user = await User.findBy('email', 'user@hotmail.com')
+    if (!user) {
+      console.error("User with email 'user@hotmail.com' not found. Please run UserSeeder first.")
+      return
+    }
     const vehicle = await UserVehicle.query()
       .where('user_id', user.id)
       .where('slug', 'yamaha-r6-2020')
@@ -18,7 +24,7 @@ export default class extends BaseSeeder {
         userVehicleId: vehicle.id,
         name: 'Vidange moteur complète',
         date: DateTime.fromISO('2025-09-01'),
-        type: 'Entretien',
+        type: 'maintenance',
         details:
           'Changement huile moteur Motul 300V 10W40 (4L) + filtre à huile Yamaha OEM + joint de vidange',
         cost: 145.5,
@@ -32,7 +38,7 @@ export default class extends BaseSeeder {
         userVehicleId: vehicle.id,
         name: 'Remplacement plaquettes de frein',
         date: DateTime.fromISO('2025-08-15'),
-        type: 'Réparation',
+        type: 'repair',
         details: 'Plaquettes avant Brembo Racing + purge liquide de frein DOT 5.1',
         cost: 280.0,
         mileage: 8200,
@@ -43,7 +49,7 @@ export default class extends BaseSeeder {
         userVehicleId: vehicle.id,
         name: 'Montage pneus piste',
         date: DateTime.fromISO('2025-07-20'),
-        type: 'Modification',
+        type: 'modification',
         details: 'Montage Pirelli Diablo Supercorsa SC2 avant/arrière + équilibrage',
         cost: 420.0,
         mileage: 7800,
@@ -54,7 +60,7 @@ export default class extends BaseSeeder {
         userVehicleId: vehicle.id,
         name: 'Révision chaîne et pignons',
         date: DateTime.fromISO('2025-06-10'),
-        type: 'Entretien',
+        type: 'maintenance',
         details: 'Nettoyage et graissage chaîne + contrôle tension + vérification usure',
         cost: 35.0,
         mileage: 7200,
@@ -67,7 +73,7 @@ export default class extends BaseSeeder {
         userVehicleId: vehicle.id,
         name: 'Changement liquide de refroidissement',
         date: DateTime.fromISO('2025-05-05'),
-        type: 'Entretien',
+        type: 'maintenance',
         details:
           'Vidange et remplissage circuit refroidissement avec liquide Motul Motocool Expert',
         cost: 65.0,

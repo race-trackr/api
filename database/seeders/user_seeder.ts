@@ -3,9 +3,16 @@ import User from '#models/user'
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 
 export default class extends BaseSeeder {
+  static environment = ['development', 'testing']
   async run() {
-    const france = await Country.findByOrFail('slug', 'france')
-    const espagne = await Country.findByOrFail('slug', 'espagne')
+    const france = await Country.findBy('slug', 'france')
+    if (!france) {
+      throw new Error('Country "france" not found. Please run CountrySeeder first.')
+    }
+    const espagne = await Country.findBy('slug', 'espagne')
+    if (!espagne) {
+      throw new Error('Country "espagne" not found. Please run CountrySeeder first.')
+    }
     // Write your database queries inside the run method
     await User.createMany([
       {

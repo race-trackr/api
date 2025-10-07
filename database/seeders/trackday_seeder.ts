@@ -6,9 +6,17 @@ import TrackDay from '#models/track_day'
 import { DateTime } from 'luxon'
 
 export default class extends BaseSeeder {
+  static environment = ['development', 'testing']
+
   async run() {
     // Récupérer l'utilisateur test
-    const user = await User.findByOrFail('email', 'user@example.com')
+    const user = await User.findBy('email', 'user@hotmail.com')
+    if (!user) {
+      console.error(
+        "L'utilisateur 'user@hotmail.com' n'existe pas. Veuillez exécuter le UserSeeder d'abord."
+      )
+      return
+    }
 
     // Créer un véhicule test s'il n'existe pas
     let vehicle = await UserVehicle.query()
@@ -31,8 +39,20 @@ export default class extends BaseSeeder {
     }
 
     // Récupérer des circuits
-    const paulRicard = await Track.findByOrFail('slug', 'paul-ricard')
-    const pauArnos = await Track.findByOrFail('slug', 'pau-arnos')
+    const paulRicard = await Track.findBy('slug', 'paul-ricard')
+    if (!paulRicard) {
+      console.error(
+        "Le circuit 'paul-ricard' n'existe pas. Veuillez exécuter le TrackSeeder d'abord."
+      )
+      return
+    }
+    const pauArnos = await Track.findBy('slug', 'pau-arnos')
+    if (!pauArnos) {
+      console.error(
+        "Le circuit 'pau-arnos' n'existe pas. Veuillez exécuter le TrackSeeder d'abord."
+      )
+      return
+    }
 
     // Créer plusieurs track days
     const trackDay1 = await TrackDay.create({

@@ -14,7 +14,8 @@ export default class CountriesController {
   }
 
   async show({ params, response }: HttpContext) {
-    const country = await Country.query().where('id', params.id).preload('tracks').firstOrFail()
+    const { id } = params
+    const country = await Country.query().where('id', id).firstOrFail()
     return response.ok(country)
   }
 

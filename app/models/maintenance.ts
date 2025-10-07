@@ -21,7 +21,7 @@ export default class Maintenance extends BaseModel {
   declare date: DateTime
 
   @column()
-  declare type: string
+  declare type: 'maintenance' | 'repair' | 'modification' | 'other'
 
   @column()
   declare details: string | null
