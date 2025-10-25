@@ -33,7 +33,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare countryId: number | null
 
   @column()
-  declare role: 'super_admin' | 'admin' | 'user'
+  declare role: 'owner' | 'admin' | 'user'
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

@@ -19,7 +19,7 @@ export default class UserVehicle extends BaseModel {
   declare slug: string
 
   @column()
-  declare type: 'Moto' | 'Voiture' | 'Karting' | 'Autre'
+  declare type: 'bike' | 'car' | 'karting' | 'other'
 
   @column()
   declare brand: string | null
@@ -35,9 +35,6 @@ export default class UserVehicle extends BaseModel {
 
   @column()
   declare details: string | null
-
-  @column()
-  declare photo: string | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

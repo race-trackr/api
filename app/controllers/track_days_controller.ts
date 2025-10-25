@@ -4,17 +4,21 @@ import TrackDay from '#models/track_day'
 export default class TrackDaysController {
   async index({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
-    const { track_id: trackId, vehicle_id: vehicleId } = request.qs()
+    console.log(user)
+    const { track_id: trackId, vehicle_id: vehicleId, limit } = request.qs()
 
     const query = TrackDay.query()
       .where('user_id', user.id)
       .preload('track', (sub_query) => sub_query.preload('country'))
       .preload('vehicle')
-      .preload('tests', (sub_query) => sub_query.orderBy('position', 'asc'))
       .orderBy('date', 'desc')
 
     if (trackId) {
       query.where('track_id', trackId)
+    }
+
+    if (limit) {
+      query.limit(limit)
     }
 
     if (vehicleId) {
@@ -46,15 +50,8 @@ export default class TrackDaysController {
       userId: user.id,
     })
 
-    const tests = request.input('tests', [])
-    if (tests.length > 0) {
-      await trackDay.related('tests').createMany(tests)
-    }
-
     await trackDay.load('track', (query) => query.preload('country'))
     await trackDay.load('vehicle')
-    await trackDay.load('tests', (query) => query.orderBy('position', 'asc'))
-
     return response.created(trackDay)
   }
 
@@ -65,7 +62,6 @@ export default class TrackDaysController {
       .where('user_id', user.id)
       .preload('track', (query) => query.preload('country'))
       .preload('vehicle')
-      .preload('tests', (query) => query.orderBy('position', 'asc'))
       .firstOrFail()
     return response.ok(trackDay)
   }
@@ -94,15 +90,8 @@ export default class TrackDaysController {
     trackDay.merge(data)
     await trackDay.save()
 
-    const tests = request.input('tests', [])
-    if (tests.length > 0) {
-      await trackDay.related('tests').query().delete()
-      await trackDay.related('tests').createMany(tests)
-    }
-
     await trackDay.load('track', (query) => query.preload('country'))
     await trackDay.load('vehicle')
-    await trackDay.load('tests', (query) => query.orderBy('position', 'asc'))
 
     return response.ok(trackDay)
   }

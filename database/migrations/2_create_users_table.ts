@@ -5,7 +5,7 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').notNullable()
+      table.increments('id')
       table.string('first_name').nullable()
       table.string('last_name').nullable()
       table
@@ -17,7 +17,7 @@ export default class extends BaseSchema {
         .onDelete('SET NULL')
       table.string('email', 254).notNullable().unique()
       table.string('password').notNullable()
-      table.enum('role', ['super_admin', 'admin', 'user']).notNullable().defaultTo('user')
+      table.enum('role', ['owner', 'admin', 'user']).notNullable().defaultTo('user')
 
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').nullable()

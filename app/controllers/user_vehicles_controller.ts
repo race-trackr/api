@@ -24,6 +24,19 @@ export default class UserVehiclesController {
       'photo',
     ])
 
+    // create slug from name
+    const slugBase = data.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+    let slug = slugBase
+    let count = 1
+    while (await UserVehicle.query().where('user_id', user.id).where('slug', slug).first()) {
+      slug = `${slugBase}-${count}`
+      count++
+    }
+    data.slug = slug
+
     const vehicle = await UserVehicle.create({
       ...data,
       userId: user.id,

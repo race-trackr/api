@@ -4,7 +4,6 @@ import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import User from './user.js'
 import Track from './track.js'
 import UserVehicle from './user_vehicle.js'
-import TrackDayTest from './track_day_test.js'
 
 export default class TrackDay extends BaseModel {
   @column({ isPrimary: true })
@@ -23,7 +22,7 @@ export default class TrackDay extends BaseModel {
   declare date: DateTime
 
   @column()
-  declare weather: string
+  declare weather: 'clear' | 'cloudy' | 'rainy'
 
   @column()
   declare airTemperature: number | null
@@ -32,10 +31,10 @@ export default class TrackDay extends BaseModel {
   declare trackTemperature: number | null
 
   @column()
-  declare trackCondition: string | null
+  declare trackCondition: 'wet' | 'dry' | 'moist'
 
   @column()
-  declare note: string | null
+  declare notes: string | null
 
   @column()
   declare bestLapTime: string | null
@@ -45,6 +44,9 @@ export default class TrackDay extends BaseModel {
 
   @column()
   declare totalDistance: number | null
+
+  @column()
+  declare chronos: string | null
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
@@ -60,7 +62,4 @@ export default class TrackDay extends BaseModel {
 
   @belongsTo(() => UserVehicle)
   declare vehicle: BelongsTo<typeof UserVehicle>
-
-  @hasMany(() => TrackDayTest)
-  declare tests: HasMany<typeof TrackDayTest>
 }

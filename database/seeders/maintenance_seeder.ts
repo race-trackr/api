@@ -16,7 +16,14 @@ export default class extends BaseSeeder {
     const vehicle = await UserVehicle.query()
       .where('user_id', user.id)
       .where('slug', 'yamaha-r6-2020')
-      .firstOrFail()
+      .first()
+
+    if (!vehicle) {
+      console.error(
+        "UserVehicle with slug 'yamaha-r6-2020' for the test user not found. Please run UserVehicleSeeder first."
+      )
+      return
+    }
 
     await Maintenance.createMany([
       {

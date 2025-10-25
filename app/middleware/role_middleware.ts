@@ -1,0 +1,17 @@
+import type { HttpContext } from '@adonisjs/core/http'
+import type { NextFn } from '@adonisjs/core/types/http'
+
+export default class RoleMiddleware {
+  async handle({ auth, response }: HttpContext, next: NextFn, options: { roles: string[] }) {
+    await auth.check()
+    const user = auth.getUserOrFail()
+
+    if (!options.roles.includes(user.role)) {
+      return response.forbidden({
+        message: 'Access denied. Insufficient permissions.',
+      })
+    }
+
+    await next()
+  }
+}

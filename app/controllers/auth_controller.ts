@@ -22,6 +22,11 @@ export default class AuthController {
     const { email, password } = request.only(['email', 'password'])
 
     const user = await User.verifyCredentials(email, password)
+
+    if (!user) {
+      return response.unauthorized({ message: 'Invalid credentials' })
+    }
+
     const token = await User.accessTokens.create(user)
 
     return response.ok({
@@ -29,6 +34,7 @@ export default class AuthController {
         id: user.id,
         email: user.email,
         fullName: user.firstName + ' ' + user.lastName,
+        role: user.role,
       },
       token: token.value!.release(),
     })
@@ -42,6 +48,14 @@ export default class AuthController {
 
   async me({ auth, response }: HttpContext) {
     const user = auth.getUserOrFail()
-    return response.ok(user)
+    return response.ok({
+      user: {
+        id: user.id,
+        email: user.email,
+        fullName: user.firstName + ' ' + user.lastName,
+        role: user.role,
+        countryId: user.countryId,
+      },
+    })
   }
 }
