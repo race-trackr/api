@@ -4,8 +4,7 @@ import TrackDay from '#models/track_day'
 export default class TrackDaysController {
   async index({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
-    console.log(user)
-    const { track_id: trackId, vehicle_id: vehicleId, limit } = request.qs()
+    const { trackId, vehicleId, limit, searchTerm, startDate, endDate } = request.qs()
 
     const query = TrackDay.query()
       .where('user_id', user.id)
@@ -13,11 +12,17 @@ export default class TrackDaysController {
       .preload('vehicle')
       .orderBy('date', 'desc')
 
+    if (searchTerm) {
+      query.whereHas('track', (sub_query) => {
+        sub_query.whereILike('name', `%${searchTerm}%`)
+      })
+    }
+
     if (trackId) {
       query.where('track_id', trackId)
     }
 
-    if (limit) {
+    if (limit && limit > 0) {
       query.limit(limit)
     }
 
@@ -82,10 +87,25 @@ export default class TrackDaysController {
       'trackTemperature',
       'trackCondition',
       'note',
+      'chronos',
       'bestLapTime',
       'totalLaps',
       'totalDistance',
     ])
+
+    // convert chronos to JSON string if present
+    if (data.chronos) {
+      data.chronos = JSON.stringify(data.chronos)
+    }
+
+    // if bestLapTime exists and not present in chronos, add to chronos
+    if (data.bestLapTime) {
+      const chronos = data.chronos ? JSON.parse(data.chronos) : []
+      if (!chronos.find((c: { lapTime: string }) => c.lapTime === data.bestLapTime)) {
+        chronos.push({ lapTime: data.bestLapTime, isBest: true })
+        data.chronos = JSON.stringify(chronos)
+      }
+    }
 
     trackDay.merge(data)
     await trackDay.save()

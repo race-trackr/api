@@ -19,7 +19,7 @@ export default class UserVehicle extends BaseModel {
   declare slug: string
 
   @column()
-  declare type: 'bike' | 'car' | 'karting' | 'other'
+  declare type: 'motorcycle' | 'car' | 'karting' | 'other'
 
   @column()
   declare brand: string | null

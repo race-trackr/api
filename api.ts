@@ -17,7 +17,7 @@ export const api = {
           fullName: 'string (required)',
         },
         response: {
-          user: { id: 'number', email: 'string', fullName: 'string', isAdmin: 'boolean' },
+          user: { id: 'number', email: 'string', fullName: 'string' },
           token: 'string',
         },
       },
@@ -31,7 +31,7 @@ export const api = {
           password: 'string (required)',
         },
         response: {
-          user: { id: 'number', email: 'string', fullName: 'string', isAdmin: 'boolean' },
+          user: { id: 'number', email: 'string', fullName: 'string' },
           token: 'string',
         },
       },
@@ -51,7 +51,6 @@ export const api = {
           id: 'number',
           email: 'string',
           fullName: 'string',
-          isAdmin: 'boolean',
           avatar: 'string|null',
         },
       },

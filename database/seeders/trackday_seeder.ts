@@ -29,7 +29,7 @@ export default class extends BaseSeeder {
         userId: user.id,
         name: 'Yamaha R6 2020',
         slug: 'yamaha-r6-2020',
-        type: 'bike',
+        type: 'motorcycle',
         brand: 'Yamaha',
         model: 'R6',
         year: 2020,
@@ -98,6 +98,220 @@ export default class extends BaseSeeder {
       bestLapTime: '1:42.567',
       totalLaps: 28,
       totalDistance: 163.576,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: pauArnos.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2025-06-05'),
+      weather: 'cloudy',
+      airTemperature: 25,
+      trackTemperature: 32,
+      trackCondition: 'dry',
+      notes: 'Première sortie sur ce circuit. Circuit technique, beaucoup de virages lents.',
+      bestLapTime: '1:16.789',
+      totalLaps: 38,
+      totalDistance: 115.14,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: paulRicard.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2025-05-15'),
+      weather: 'rainy',
+      airTemperature: 20,
+      trackTemperature: 24,
+      trackCondition: 'wet',
+      notes: "Pluie intermittente. Session difficile mais très formatrice pour gérer l'adhérence.",
+      bestLapTime: '1:42.567',
+      totalLaps: 28,
+      totalDistance: 163.576,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: pauArnos.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2025-04-20'),
+      weather: 'cloudy',
+      airTemperature: 22,
+      trackTemperature: 28,
+      trackCondition: 'dry',
+      notes: 'Première sortie sur ce circuit. Circuit technique, beaucoup de virages lents.',
+      bestLapTime: '1:16.789',
+      totalLaps: 38,
+      totalDistance: 115.14,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: paulRicard.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2025-03-10'),
+      weather: 'rainy',
+      airTemperature: 18,
+      trackTemperature: 22,
+      trackCondition: 'wet',
+      notes: "Pluie intermittente. Session difficile mais très formatrice pour gérer l'adhérence.",
+      bestLapTime: '1:42.567',
+      totalLaps: 28,
+      totalDistance: 163.576,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: pauArnos.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2025-02-05'),
+      weather: 'cloudy',
+      airTemperature: 25,
+      trackTemperature: 32,
+      trackCondition: 'dry',
+      notes: 'Première sortie sur ce circuit. Circuit technique, beaucoup de virages lents.',
+      bestLapTime: '1:16.789',
+      totalLaps: 38,
+      totalDistance: 115.14,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: paulRicard.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2025-01-15'),
+      weather: 'rainy',
+      airTemperature: 20,
+      trackTemperature: 24,
+      trackCondition: 'wet',
+      notes: "Pluie intermittente. Session difficile mais très formatrice pour gérer l'adhérence.",
+      bestLapTime: '1:42.567',
+      totalLaps: 28,
+      totalDistance: 163.576,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: pauArnos.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2025-01-01'),
+      weather: 'cloudy',
+      airTemperature: 22,
+      trackTemperature: 28,
+      trackCondition: 'dry',
+      notes: 'Première sortie sur ce circuit. Circuit technique, beaucoup de virages lents.',
+      bestLapTime: '1:16.789',
+      totalLaps: 38,
+      totalDistance: 115.14,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: paulRicard.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2024-12-10'),
+      weather: 'rainy',
+      airTemperature: 18,
+      trackTemperature: 22,
+      trackCondition: 'wet',
+      notes: "Pluie intermittente. Session difficile mais très formatrice pour gérer l'adhérence.",
+      bestLapTime: '1:42.567',
+      totalLaps: 28,
+      totalDistance: 163.576,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: pauArnos.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2024-11-05'),
+      weather: 'cloudy',
+      airTemperature: 25,
+      trackTemperature: 32,
+      trackCondition: 'dry',
+      notes: 'Première sortie sur ce circuit. Circuit technique, beaucoup de virages lents.',
+      bestLapTime: '1:16.789',
+      totalLaps: 38,
+      totalDistance: 115.14,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: paulRicard.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2024-10-15'),
+      weather: 'rainy',
+      airTemperature: 20,
+      trackTemperature: 24,
+      trackCondition: 'wet',
+      notes: "Pluie intermittente. Session difficile mais très formatrice pour gérer l'adhérence.",
+      bestLapTime: '1:42.567',
+      totalLaps: 28,
+      totalDistance: 163.576,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: pauArnos.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2024-10-01'),
+      weather: 'cloudy',
+      airTemperature: 22,
+      trackTemperature: 28,
+      trackCondition: 'dry',
+      notes: 'Première sortie sur ce circuit. Circuit technique, beaucoup de virages lents.',
+      bestLapTime: '1:16.789',
+      totalLaps: 38,
+      totalDistance: 115.14,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: paulRicard.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2024-09-10'),
+      weather: 'rainy',
+      airTemperature: 18,
+      trackTemperature: 22,
+      trackCondition: 'wet',
+      notes: "Pluie intermittente. Session difficile mais très formatrice pour gérer l'adhérence.",
+      bestLapTime: '1:42.567',
+      totalLaps: 28,
+      totalDistance: 163.576,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: paulRicard.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2026-04-20'),
+      weather: null,
+      notes: 'Prévu pour tester les nouvelles configurations de la moto.',
+      bestLapTime: null,
+      totalLaps: 0,
+      totalDistance: 0,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: pauArnos.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2026-06-20'),
+      notes: 'Prévu pour tester les nouvelles configurations de la moto.',
+      bestLapTime: null,
+      totalLaps: 0,
+      totalDistance: 0,
+    })
+
+    await TrackDay.create({
+      userId: user.id,
+      trackId: paulRicard.id,
+      userVehicleId: vehicle.id,
+      date: DateTime.fromISO('2026-08-20'),
+      notes: 'Prévu pour tester les nouvelles configurations de la moto.',
+      bestLapTime: null,
+      totalLaps: 0,
+      totalDistance: 0,
     })
 
     console.log('✅ Track days créés avec succès!')

@@ -15,7 +15,7 @@ export default class extends BaseSchema {
         .onDelete('SET NULL')
         .nullable()
       table.date('date').notNullable()
-      table.enum('weather', ['clear', 'cloudy', 'rainy']).notNullable()
+      table.enum('weather', ['clear', 'cloudy', 'rainy']).nullable()
       table.integer('air_temperature').nullable() // en °C
       table.integer('track_temperature').nullable() // en °C
       table.enum('track_condition', ['wet', 'dry', 'moist']).nullable()
@@ -23,6 +23,7 @@ export default class extends BaseSchema {
       table.string('best_lap_time').nullable()
       table.integer('total_laps').nullable()
       table.decimal('total_distance', 8, 2).nullable() // en km
+      table.json('chronos').nullable()
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

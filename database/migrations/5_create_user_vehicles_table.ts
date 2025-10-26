@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.integer('user_id').unsigned().references('users.id').onDelete('CASCADE')
       table.string('name').notNullable()
       table.string('slug').notNullable()
-      table.enum('type', ['bike', 'car', 'karting', 'other']).notNullable()
+      table.enum('type', ['motorcycle', 'car', 'karting', 'other']).notNullable()
       table.string('brand').nullable()
       table.string('model').nullable()
       table.integer('year').nullable()

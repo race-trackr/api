@@ -1,12 +1,13 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import UserVehicle from './user_vehicle.js'
 import TrackDay from './track_day.js'
-import type { HasMany } from '@adonisjs/lucid/types/relations'
+import type { HasMany, HasOne } from '@adonisjs/lucid/types/relations'
+import Subscription from './subscription.js'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -46,6 +47,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
 
   @hasMany(() => TrackDay)
   declare trackDays: HasMany<typeof TrackDay>
+
+  @hasOne(() => Subscription)
+  declare subscription: HasOne<typeof Subscription>
 
   static accessTokens = DbAccessTokensProvider.forModel(User)
 }

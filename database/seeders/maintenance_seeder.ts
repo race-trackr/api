@@ -13,16 +13,24 @@ export default class extends BaseSeeder {
       console.error("User with email 'user@hotmail.com' not found. Please run UserSeeder first.")
       return
     }
-    const vehicle = await UserVehicle.query()
+    let vehicle = await UserVehicle.query()
       .where('user_id', user.id)
       .where('slug', 'yamaha-r6-2020')
       .first()
 
     if (!vehicle) {
-      console.error(
-        "UserVehicle with slug 'yamaha-r6-2020' for the test user not found. Please run UserVehicleSeeder first."
-      )
-      return
+      vehicle = await UserVehicle.create({
+        userId: user.id,
+        name: 'Yamaha R6 2020',
+        slug: 'yamaha-r6-2020',
+        type: 'motorcycle',
+        brand: 'Yamaha',
+        model: 'R6',
+        year: 2020,
+        licensePlate: 'AB-123-CD',
+        details: 'Moto de piste préparée',
+      })
+      console.log("✅ Véhicule 'Yamaha R6 2020' créé pour l'utilisateur de test.")
     }
 
     await Maintenance.createMany([

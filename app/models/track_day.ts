@@ -22,7 +22,7 @@ export default class TrackDay extends BaseModel {
   declare date: DateTime
 
   @column()
-  declare weather: 'clear' | 'cloudy' | 'rainy'
+  declare weather: 'clear' | 'cloudy' | 'rainy' | null
 
   @column()
   declare airTemperature: number | null
@@ -31,7 +31,7 @@ export default class TrackDay extends BaseModel {
   declare trackTemperature: number | null
 
   @column()
-  declare trackCondition: 'wet' | 'dry' | 'moist'
+  declare trackCondition: 'wet' | 'dry' | 'moist' | null
 
   @column()
   declare notes: string | null
