@@ -4,7 +4,7 @@ import TrackDay from '#models/track_day'
 export default class TrackDaysController {
   async index({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
-    const { trackId, vehicleId, limit, searchTerm, startDate, endDate } = request.qs()
+    const { trackId, vehicleId, limit, searchTerm, page } = request.qs()
 
     const query = TrackDay.query()
       .where('user_id', user.id)
@@ -22,12 +22,13 @@ export default class TrackDaysController {
       query.where('track_id', trackId)
     }
 
-    if (limit && limit > 0) {
-      query.limit(limit)
-    }
-
     if (vehicleId) {
       query.where('user_vehicle_id', vehicleId)
+    }
+
+    if (limit && limit > 0) {
+      const trackDays = await query.paginate(page || 1, limit)
+      return trackDays.toJSON()
     }
 
     const trackDays = await query
