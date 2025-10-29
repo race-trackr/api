@@ -65,7 +65,7 @@ export default class extends BaseSeeder {
       trackTemperature: 42,
       trackCondition: 'dry',
       notes: 'Excellente journée, conditions parfaites. Beaucoup appris sur les trajectoires.',
-      bestLapTime: '1:35.234',
+      bestLapTime: '1.35.234',
       totalLaps: 52,
       totalDistance: 303.784,
     })
@@ -80,7 +80,7 @@ export default class extends BaseSeeder {
       trackTemperature: 28,
       trackCondition: 'dry',
       notes: 'Première sortie sur ce circuit. Circuit technique, beaucoup de virages lents.',
-      bestLapTime: '1:16.789',
+      bestLapTime: '1.16.789',
       totalLaps: 38,
       totalDistance: 115.14,
     })
@@ -95,7 +95,7 @@ export default class extends BaseSeeder {
       trackTemperature: 22,
       trackCondition: 'wet',
       notes: "Pluie intermittente. Session difficile mais très formatrice pour gérer l'adhérence.",
-      bestLapTime: '1:42.567',
+      bestLapTime: '1.42.567',
       totalLaps: 28,
       totalDistance: 163.576,
     })
@@ -110,7 +110,7 @@ export default class extends BaseSeeder {
       trackTemperature: 32,
       trackCondition: 'dry',
       notes: 'Première sortie sur ce circuit. Circuit technique, beaucoup de virages lents.',
-      bestLapTime: '1:16.789',
+      bestLapTime: '1.16.789',
       totalLaps: 38,
       totalDistance: 115.14,
     })
@@ -125,7 +125,7 @@ export default class extends BaseSeeder {
       trackTemperature: 24,
       trackCondition: 'wet',
       notes: "Pluie intermittente. Session difficile mais très formatrice pour gérer l'adhérence.",
-      bestLapTime: '1:42.567',
+      bestLapTime: '1.42.567',
       totalLaps: 28,
       totalDistance: 163.576,
     })
@@ -140,7 +140,7 @@ export default class extends BaseSeeder {
       trackTemperature: 28,
       trackCondition: 'dry',
       notes: 'Première sortie sur ce circuit. Circuit technique, beaucoup de virages lents.',
-      bestLapTime: '1:16.789',
+      bestLapTime: '1.16.789',
       totalLaps: 38,
       totalDistance: 115.14,
     })
@@ -155,7 +155,7 @@ export default class extends BaseSeeder {
       trackTemperature: 22,
       trackCondition: 'wet',
       notes: "Pluie intermittente. Session difficile mais très formatrice pour gérer l'adhérence.",
-      bestLapTime: '1:42.567',
+      bestLapTime: '1.42.567',
       totalLaps: 28,
       totalDistance: 163.576,
     })
@@ -170,7 +170,7 @@ export default class extends BaseSeeder {
       trackTemperature: 32,
       trackCondition: 'dry',
       notes: 'Première sortie sur ce circuit. Circuit technique, beaucoup de virages lents.',
-      bestLapTime: '1:16.789',
+      bestLapTime: '1.16.789',
       totalLaps: 38,
       totalDistance: 115.14,
     })
@@ -185,7 +185,7 @@ export default class extends BaseSeeder {
       trackTemperature: 24,
       trackCondition: 'wet',
       notes: "Pluie intermittente. Session difficile mais très formatrice pour gérer l'adhérence.",
-      bestLapTime: '1:42.567',
+      bestLapTime: '1.42.567',
       totalLaps: 28,
       totalDistance: 163.576,
     })
@@ -200,7 +200,7 @@ export default class extends BaseSeeder {
       trackTemperature: 28,
       trackCondition: 'dry',
       notes: 'Première sortie sur ce circuit. Circuit technique, beaucoup de virages lents.',
-      bestLapTime: '1:16.789',
+      bestLapTime: '1.16.789',
       totalLaps: 38,
       totalDistance: 115.14,
     })
@@ -215,7 +215,7 @@ export default class extends BaseSeeder {
       trackTemperature: 22,
       trackCondition: 'wet',
       notes: "Pluie intermittente. Session difficile mais très formatrice pour gérer l'adhérence.",
-      bestLapTime: '1:42.567',
+      bestLapTime: '1.42.567',
       totalLaps: 28,
       totalDistance: 163.576,
     })
@@ -230,7 +230,7 @@ export default class extends BaseSeeder {
       trackTemperature: 32,
       trackCondition: 'dry',
       notes: 'Première sortie sur ce circuit. Circuit technique, beaucoup de virages lents.',
-      bestLapTime: '1:16.789',
+      bestLapTime: '1.16.789',
       totalLaps: 38,
       totalDistance: 115.14,
     })
@@ -245,7 +245,7 @@ export default class extends BaseSeeder {
       trackTemperature: 24,
       trackCondition: 'wet',
       notes: "Pluie intermittente. Session difficile mais très formatrice pour gérer l'adhérence.",
-      bestLapTime: '1:42.567',
+      bestLapTime: '1.42.567',
       totalLaps: 28,
       totalDistance: 163.576,
     })
@@ -260,7 +260,7 @@ export default class extends BaseSeeder {
       trackTemperature: 28,
       trackCondition: 'dry',
       notes: 'Première sortie sur ce circuit. Circuit technique, beaucoup de virages lents.',
-      bestLapTime: '1:16.789',
+      bestLapTime: '1.16.789',
       totalLaps: 38,
       totalDistance: 115.14,
     })
@@ -275,7 +275,7 @@ export default class extends BaseSeeder {
       trackTemperature: 22,
       trackCondition: 'wet',
       notes: "Pluie intermittente. Session difficile mais très formatrice pour gérer l'adhérence.",
-      bestLapTime: '1:42.567',
+      bestLapTime: '1.42.567',
       totalLaps: 28,
       totalDistance: 163.576,
     })

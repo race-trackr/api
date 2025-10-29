@@ -3,7 +3,7 @@ import User from '#models/user'
 
 export default class AuthController {
   async register({ request, response }: HttpContext) {
-    const data = request.only(['email', 'password', 'fullName'])
+    const data = request.only(['email', 'password', 'firstName', 'lastName', 'countryId'])
 
     const user = await User.create(data)
     const token = await User.accessTokens.create(user)
@@ -12,7 +12,10 @@ export default class AuthController {
       user: {
         id: user.id,
         email: user.email,
-        fullName: user.firstName + ' ' + user.lastName,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        countryId: user.countryId,
+        role: user.role,
       },
       token: token.value!.release(),
     })
@@ -33,7 +36,9 @@ export default class AuthController {
       user: {
         id: user.id,
         email: user.email,
-        fullName: user.firstName + ' ' + user.lastName,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        countryId: user.countryId,
         role: user.role,
       },
       token: token.value!.release(),
@@ -52,9 +57,10 @@ export default class AuthController {
       user: {
         id: user.id,
         email: user.email,
-        fullName: user.firstName + ' ' + user.lastName,
-        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
         countryId: user.countryId,
+        role: user.role,
       },
     })
   }

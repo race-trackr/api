@@ -27,7 +27,7 @@ export default class Track extends BaseModel {
   declare turns: string | null
 
   @column()
-  declare length: number
+  declare length: string | number | null
 
   @column()
   declare width: string | number | null

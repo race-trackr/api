@@ -8,7 +8,13 @@ export default class SubscriptionMiddleware {
     const subscription = await user?.related('subscription').query().first()
 
     if (!subscription || subscription.status !== 'active') {
-      return ctx.response.unauthorized({ error: 'Active subscription required' })
+      // No active subscription, free plan limits
+      if (feature) {
+        return ctx.response.forbidden({
+          error: `Feature ${feature} not available in your plan`,
+        })
+      }
+      return next()
     }
 
     if (feature && !checkFeature(subscription.features, feature)) {
