@@ -6,7 +6,7 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-
+      table.uuid('uuid').unique().defaultTo(this.raw('gen_random_uuid()'))
       table
         .integer('user_id')
         .unsigned()
@@ -16,24 +16,17 @@ export default class extends BaseSchema {
         .notNullable()
 
       table.enum('plan', ['free', 'basic', 'pro', 'enterprise']).defaultTo('free').notNullable()
-
       table
         .enum('status', ['active', 'canceled', 'expired', 'pending'])
         .defaultTo('pending')
         .notNullable()
-
       table.enum('billing_cycle', ['monthly', 'yearly']).defaultTo('monthly').notNullable()
-
       table.decimal('price', 10, 2).notNullable().defaultTo(0)
-
       table.date('start_date').notNullable()
       table.date('end_date').notNullable()
       table.date('trial_ends_at').nullable()
       table.date('canceled_at').nullable()
-
       table.boolean('auto_renew').defaultTo(true).notNullable()
-
-      // Store features as JSON
       table
         .json('features')
         .notNullable()
@@ -55,7 +48,6 @@ export default class extends BaseSchema {
             allowCustomLogos: false,
           })
         )
-
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

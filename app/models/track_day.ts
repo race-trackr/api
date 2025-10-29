@@ -1,13 +1,17 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import { BaseModel, column, belongsTo, beforeCreate } from '@adonisjs/lucid/orm'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import User from './user.js'
 import Track from './track.js'
 import UserVehicle from './user_vehicle.js'
+import { v4 as uuidv4 } from 'uuid'
 
 export default class TrackDay extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
+
+  @column()
+  declare uuid: string
 
   @column()
   declare userId: number
@@ -62,4 +66,9 @@ export default class TrackDay extends BaseModel {
 
   @belongsTo(() => UserVehicle)
   declare vehicle: BelongsTo<typeof UserVehicle>
+
+  @beforeCreate()
+  public static generateUuid(trackDay: TrackDay) {
+    trackDay.uuid = uuidv4()
+  }
 }

@@ -6,6 +6,7 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
+      table.uuid('uuid').unique().defaultTo(this.raw('gen_random_uuid()'))
       table.integer('user_id').unsigned().references('users.id').onDelete('CASCADE')
       table.integer('user_vehicle_id').unsigned().references('user_vehicles.id').onDelete('CASCADE')
       table.string('name').notNullable() // ex: Vidange, Changement plaquettes

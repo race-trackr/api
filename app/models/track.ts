@@ -1,12 +1,16 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, column, belongsTo, hasMany, beforeCreate } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Country from './country.js'
 import TrackDay from './track_day.js'
+import { v4 as uuidv4 } from 'uuid'
 
 export default class Track extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
+
+  @column()
+  declare uuid: string
 
   @column()
   declare name: string
@@ -55,4 +59,9 @@ export default class Track extends BaseModel {
 
   @hasMany(() => TrackDay)
   declare trackDays: HasMany<typeof TrackDay>
+
+  @beforeCreate()
+  public static generateUuid(track: Track) {
+    track.uuid = uuidv4()
+  }
 }

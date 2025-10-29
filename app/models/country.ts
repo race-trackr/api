@@ -1,11 +1,15 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
+import { BaseModel, beforeCreate, column, hasMany } from '@adonisjs/lucid/orm'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
 import Track from './track.js'
+import { v4 as uuidv4 } from 'uuid'
 
 export default class Country extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
+
+  @column()
+  declare uuid: string
 
   @column()
   declare name: string
@@ -30,4 +34,9 @@ export default class Country extends BaseModel {
 
   @hasMany(() => Track)
   declare tracks: HasMany<typeof Track>
+
+  @beforeCreate()
+  public static async generateUuid(country: Country) {
+    country.uuid = uuidv4()
+  }
 }

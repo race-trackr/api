@@ -1,7 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
+import { BaseModel, column, belongsTo, beforeCreate } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import User from './user.js'
+import { v4 as uuidv4 } from 'uuid'
 
 export type SubscriptionStatus = 'active' | 'canceled' | 'expired' | 'pending'
 export type SubscriptionPlan = 'free' | 'basic' | 'pro' | 'enterprise'
@@ -29,6 +30,9 @@ export interface SubscriptionFeatures {
 export default class Subscription extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
+
+  @column()
+  declare uuid: string
 
   @column()
   declare stripeCustomerId: string
@@ -74,4 +78,9 @@ export default class Subscription extends BaseModel {
 
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>
+
+  @beforeCreate()
+  public static generateUuid(subscription: Subscription) {
+    subscription.uuid = uuidv4()
+  }
 }
