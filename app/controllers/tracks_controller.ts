@@ -11,7 +11,6 @@ export default class TracksController {
     }
 
     const tracks = await Track.query().orderBy('name', 'asc')
-
     return response.ok(tracks)
   }
 

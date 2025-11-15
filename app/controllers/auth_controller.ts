@@ -1,20 +1,20 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
+import { loginValidator, registerValidator } from '#validators/auth_validator'
 
 export default class AuthController {
   async register({ request, response }: HttpContext) {
-    const data = request.only(['email', 'password', 'firstName', 'lastName', 'countryId'])
+    const payload = await request.validateUsing(registerValidator)
 
-    const user = await User.create(data)
+    const user = await User.create(payload)
     const token = await User.accessTokens.create(user)
 
     return response.created({
       user: {
-        id: user.id,
+        id: user.uuid,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        countryId: user.countryId,
         role: user.role,
       },
       token: token.value!.release(),
@@ -22,7 +22,8 @@ export default class AuthController {
   }
 
   async login({ request, response }: HttpContext) {
-    const { email, password } = request.only(['email', 'password'])
+    const payload = await request.validateUsing(loginValidator)
+    const { email, password } = payload
 
     const user = await User.verifyCredentials(email, password)
 
@@ -34,11 +35,10 @@ export default class AuthController {
 
     return response.ok({
       user: {
-        id: user.id,
+        id: user.uuid,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        countryId: user.countryId,
         role: user.role,
       },
       token: token.value!.release(),
@@ -55,11 +55,10 @@ export default class AuthController {
     const user = auth.getUserOrFail()
     return response.ok({
       user: {
-        id: user.id,
+        id: user.uuid,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        countryId: user.countryId,
         role: user.role,
       },
     })

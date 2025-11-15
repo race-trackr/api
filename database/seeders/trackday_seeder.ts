@@ -4,6 +4,7 @@ import Track from '#models/track'
 import UserVehicle from '#models/user_vehicle'
 import TrackDay from '#models/track_day'
 import { DateTime } from 'luxon'
+import logger from '@adonisjs/core/services/logger'
 
 export default class extends BaseSeeder {
   static environment = ['development', 'testing']
@@ -36,7 +37,7 @@ export default class extends BaseSeeder {
         licensePlate: 'AB-123-CD',
         details: 'Moto de piste préparée',
       })
-      console.log("✅ Véhicule 'Yamaha R6 2020' créé pour l'utilisateur de test.")
+      logger.info("✅ Véhicule 'Yamaha R6 2020' créé pour l'utilisateur de test.")
     }
 
     // Récupérer des circuits
@@ -314,6 +315,6 @@ export default class extends BaseSeeder {
       totalDistance: 0,
     })
 
-    console.log('✅ Track days créés avec succès!')
+    logger.info('✅ Track days créés avec succès!')
   }
 }

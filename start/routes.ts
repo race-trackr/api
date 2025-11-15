@@ -21,7 +21,6 @@ router.get('/', async ({ response }) => {
 router.get('/api/v1', async ({ response }) => {
   return response.json(api)
 })
-
 // Routes publiques
 router
   .group(() => {

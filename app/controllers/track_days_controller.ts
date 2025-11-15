@@ -4,25 +4,51 @@ import TrackDay from '#models/track_day'
 export default class TrackDaysController {
   async index({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
-    const { trackId, vehicleId, limit, searchTerm, page } = request.qs()
+    const { trackId, vehicleId, limit, searchTerm, page, expand } = request.qs()
 
-    const query = TrackDay.query()
-      .where('user_id', user.id)
-      .preload('track', (sub_query) => sub_query.preload('country'))
-      .preload('vehicle')
-      .orderBy('date', 'desc')
+    let query
+    if (expand === 'false') {
+      query = TrackDay.query().where('user_id', user.id).orderBy('date', 'desc')
+    } else {
+      query = TrackDay.query()
+        .where('user_id', user.id)
+        .preload('track', (sub_query) => sub_query.preload('country'))
+        .preload('vehicle')
+        .orderBy('date', 'desc')
+    }
 
     if (searchTerm) {
+      if (expand === 'false') {
+        // show error if expand is false and trackId is provided, cannot filter without loading relation
+        return response.json({
+          error: 'INVALID_REQUEST',
+          message: 'Cannot filter by searchTerm when expand is false',
+        })
+      }
       query.whereHas('track', (sub_query) => {
         sub_query.whereILike('name', `%${searchTerm}%`)
       })
     }
 
     if (trackId) {
+      if (expand === 'false') {
+        // show error if expand is false and trackId is provided, cannot filter without loading relation
+        return response.json({
+          error: 'INVALID_REQUEST',
+          message: 'Cannot filter by trackId when expand is false',
+        })
+      }
       query.where('track_id', trackId)
     }
 
     if (vehicleId) {
+      if (expand === 'false') {
+        // show error if expand is false and trackId is provided, cannot filter without loading relation
+        return response.json({
+          error: 'INVALID_REQUEST',
+          message: 'Cannot filter by vehicleId when expand is false',
+        })
+      }
       query.where('user_vehicle_id', vehicleId)
     }
 
@@ -61,14 +87,59 @@ export default class TrackDaysController {
     return response.created(trackDay)
   }
 
-  async show({ auth, params, response }: HttpContext) {
+  async show({ auth, params, response, request }: HttpContext) {
+    const { id } = params
+    const { trackId, vehicleId, searchTerm, expand } = request.qs()
+
     const user = auth.getUserOrFail()
-    const trackDay = await TrackDay.query()
-      .where('id', params.id)
-      .where('user_id', user.id)
-      .preload('track', (query) => query.preload('country'))
-      .preload('vehicle')
-      .firstOrFail()
+    console.log('expand', expand)
+    let query
+    if (expand === 'false') {
+      query = TrackDay.query().where('id', id).where('user_id', user.id)
+    } else {
+      query = TrackDay.query()
+        .where('id', id)
+        .where('user_id', user.id)
+        .preload('track', (sub_query) => sub_query.preload('country'))
+        .preload('vehicle')
+    }
+
+    if (searchTerm) {
+      if (expand === 'false') {
+        // show error if expand is false and trackId is provided, cannot filter without loading relation
+        return response.json({
+          error: 'INVALID_REQUEST',
+          message: 'Cannot filter by searchTerm when expand is false',
+        })
+      }
+      query.whereHas('track', (sub_query) => {
+        sub_query.whereILike('name', `%${searchTerm}%`)
+      })
+    }
+
+    if (trackId) {
+      if (expand === 'false') {
+        // show error if expand is false and trackId is provided, cannot filter without loading relation
+        return response.json({
+          error: 'INVALID_REQUEST',
+          message: 'Cannot filter by trackId when expand is false',
+        })
+      }
+      query.where('track_id', trackId)
+    }
+
+    if (vehicleId) {
+      if (expand === 'false') {
+        // show error if expand is false and trackId is provided, cannot filter without loading relation
+        return response.json({
+          error: 'INVALID_REQUEST',
+          message: 'Cannot filter by vehicleId when expand is false',
+        })
+      }
+      query.where('user_vehicle_id', vehicleId)
+    }
+    const trackDay = await query.firstOrFail()
+
     return response.ok(trackDay)
   }
 

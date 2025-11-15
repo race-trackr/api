@@ -1,5 +1,7 @@
 import app from '@adonisjs/core/services/app'
-import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
+import { HttpContext, ExceptionHandler, errors } from '@adonisjs/core/http'
+import { Logger } from '@adonisjs/core/logger'
+import { Exception } from '@adonisjs/core/exceptions'
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -12,7 +14,11 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * The method is used for handling errors and returning
    * response to the client
    */
-  async handle(error: unknown, ctx: HttpContext) {
+  async handle(error: Exception, ctx: HttpContext) {
+    if (error instanceof errors.E_ROUTE_NOT_FOUND) {
+      return ctx.response.status(404).send({ error: error, message: 'Invalid URL' })
+    }
+
     return super.handle(error, ctx)
   }
 
