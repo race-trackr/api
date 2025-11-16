@@ -15,10 +15,6 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * response to the client
    */
   async handle(error: Exception, ctx: HttpContext) {
-    if (error instanceof errors.E_ROUTE_NOT_FOUND) {
-      return ctx.response.status(404).send({ error: error, message: 'Invalid URL' })
-    }
-
     return super.handle(error, ctx)
   }
 
