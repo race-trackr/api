@@ -1,6 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
-import { checkFeature, withinLimits } from '../helpers/subscription_helper.js'
+import { checkFeature } from '../helpers/subscription_helper.js'
 
 export default class SubscriptionMiddleware {
   async handle(ctx: HttpContext, next: NextFn, feature?: string) {

@@ -2,7 +2,6 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Track from '#models/track'
 import app from '@adonisjs/core/services/app'
 import { cuid } from '@adonisjs/core/helpers'
-import logger from '@adonisjs/core/services/logger'
 
 export default class TracksController {
   async index({ request, response }: HttpContext) {
