@@ -19,6 +19,8 @@ export default class extends BaseSchema {
       table.string('best_lap_time').nullable() // format: "1:23.456"
       table.string('best_lap_time_pilot').nullable()
       table.text('description').nullable()
+      table.string('logo_url').nullable()
+      table.string('track_layout_url').nullable()
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })

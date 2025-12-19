@@ -48,6 +48,12 @@ export default class Track extends BaseModel {
   @column()
   declare description: string | null
 
+  @column()
+  declare logoUrl: string | null
+
+  @column()
+  declare trackLayoutUrl: string | null
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

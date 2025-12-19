@@ -68,4 +68,4 @@ router
     router.delete('/countries/:id', [CountriesController, 'destroy'])
   })
   .prefix('/api/v1')
-  .use([middleware.auth(), middleware.role({ roles: ['owner'] })])
+  .use([middleware.auth(), middleware.role({ roles: ['admin'] })])

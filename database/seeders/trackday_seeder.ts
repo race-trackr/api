@@ -37,7 +37,7 @@ export default class extends BaseSeeder {
         licensePlate: 'AB-123-CD',
         details: 'Moto de piste préparée',
       })
-      logger.info("✅ Véhicule 'Yamaha R6 2020' créé pour l'utilisateur de test.")
+      logger.info(null, "✅ Véhicule 'Yamaha R6 2020' créé pour l'utilisateur de test.")
     }
 
     // Récupérer des circuits
@@ -315,6 +315,6 @@ export default class extends BaseSeeder {
       totalDistance: 0,
     })
 
-    logger.info('✅ Track days créés avec succès!')
+    logger.info(null, '✅ Track days créés avec succès!')
   }
 }

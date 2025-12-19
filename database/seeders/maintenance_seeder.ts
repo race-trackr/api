@@ -31,7 +31,7 @@ export default class extends BaseSeeder {
         licensePlate: 'AB-123-CD',
         details: 'Moto de piste préparée',
       })
-      logger.info("✅ Véhicule 'Yamaha R6 2020' créé pour l'utilisateur de test.")
+      logger.info(null, "✅ Véhicule 'Yamaha R6 2020' créé pour l'utilisateur de test.")
     }
 
     await Maintenance.createMany([
@@ -99,6 +99,6 @@ export default class extends BaseSeeder {
       },
     ])
 
-    logger.info('✅ Maintenances créées avec succès!')
+    logger.info(null, '✅ Maintenances créées avec succès!')
   }
 }

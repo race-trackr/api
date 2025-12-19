@@ -58,7 +58,7 @@ export default class TrackDaysController {
     }
 
     const trackDays = await query
-    return response.ok(trackDays)
+    return response.ok({ data: trackDays })
   }
 
   async store({ auth, request, response }: HttpContext) {
@@ -92,8 +92,8 @@ export default class TrackDaysController {
     const { trackId, vehicleId, searchTerm, expand } = request.qs()
 
     const user = auth.getUserOrFail()
-    console.log('expand', expand)
     let query
+
     if (expand === 'false') {
       query = TrackDay.query().where('id', id).where('user_id', user.id)
     } else {
