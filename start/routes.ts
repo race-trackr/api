@@ -8,6 +8,7 @@ const TracksController = () => import('#controllers/tracks_controller')
 const UserVehiclesController = () => import('#controllers/user_vehicles_controller')
 const TrackDaysController = () => import('#controllers/track_days_controller')
 const MaintenancesController = () => import('#controllers/maintenances_controller')
+const UserController = () => import('#controllers/user_controller')
 
 router.get('/', async ({ response }) => {
   return response.json({
@@ -29,10 +30,8 @@ router
     router.post('/auth/login', [AuthController, 'login'])
 
     // Consultation publique des circuits et pays
-    router.get('/countries', [CountriesController, 'index'])
-    router.get('/countries/:id', [CountriesController, 'show'])
-    router.get('/tracks', [TracksController, 'index'])
-    router.get('/tracks/:id', [TracksController, 'show'])
+    router.resource('countries', CountriesController).apiOnly().only(['index', 'show'])
+    router.resource('tracks', TracksController).apiOnly().only(['index', 'show'])
   })
   .prefix('/api/v1')
 
@@ -41,7 +40,11 @@ router
   .group(() => {
     // Auth
     router.post('/auth/logout', [AuthController, 'logout'])
-    router.get('/auth/me', [AuthController, 'me'])
+
+    // User
+    router.get('/users/me', [UserController, 'me'])
+    router.put('/users/me', [UserController, 'update'])
+    router.delete('/users/me', [UserController, 'delete'])
 
     // Véhicules utilisateur
     router.resource('vehicles', UserVehiclesController).apiOnly()

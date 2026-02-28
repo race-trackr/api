@@ -6,7 +6,9 @@ export default class AuthController {
   async register({ request, response }: HttpContext) {
     const payload = await request.validateUsing(registerValidator)
 
-    const user = await User.create(payload)
+    // initialize preferences as empty object if not provided
+    const data = { ...payload, preferences: payload.preferences || {} }
+    const user = await User.create(data)
     const token = await User.accessTokens.create(user)
 
     return response.created({

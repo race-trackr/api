@@ -60,7 +60,7 @@ export const api = {
       },
       me: {
         method: 'GET',
-        path: '/api/auth/me',
+        path: '/api/users/me',
         description: "Récupérer les informations de l'utilisateur connecté",
         auth: true,
         response: {

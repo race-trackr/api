@@ -15,6 +15,7 @@ export const registerValidator = vine.compile(
     lastName: vine.string(),
     countryId: vine.number(),
     role: vine.enum(['owner', 'admin', 'user']).optional(),
+    preferences: vine.any().optional(),
   })
 )
 

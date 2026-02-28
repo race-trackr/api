@@ -40,6 +40,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare role: 'owner' | 'admin' | 'user'
 
+  @column({ serializeAs: null })
+  declare preferences: Record<string, any> | null
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

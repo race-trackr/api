@@ -13,12 +13,6 @@ export default class CountriesController {
     return response.created(country)
   }
 
-  async show({ params, response }: HttpContext) {
-    const { id } = params
-    const country = await Country.query().where('id', id).firstOrFail()
-    return response.ok(country)
-  }
-
   async update({ params, request, response }: HttpContext) {
     const country = await Country.findOrFail(params.id)
     const data = request.only(['name', 'slug', 'iso', 'timezone', 'capital'])
