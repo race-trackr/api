@@ -14,7 +14,15 @@ export default class extends BaseSeeder {
       throw new Error('Country "espagne" not found. Please run CountrySeeder first.')
     }
     // Write your database queries inside the run method
-    await User.createMany([
+    await User.updateOrCreateMany('email', [
+      {
+        email: 'owner@hotmail.fr',
+        password: 'owner',
+        role: 'owner',
+        countryId: france.id,
+        firstName: 'Winkler',
+        lastName: 'Fabien',
+      },
       {
         email: 'admin@hotmail.fr',
         password: 'admin',

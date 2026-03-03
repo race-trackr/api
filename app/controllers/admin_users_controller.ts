@@ -1,0 +1,71 @@
+import type { HttpContext } from '@adonisjs/core/http'
+import User from '#models/user'
+import { updateUserValidator } from '#validators/user_validator'
+
+export default class AdminUsersController {
+  public async index({ request, response }: HttpContext) {
+    // support lightweight fetch for autocomplete (only emails)
+    const emailsOnly = request.input('emailsOnly', false)
+
+    if (emailsOnly) {
+      const users = await User.query().select('email')
+      return response.ok({ users })
+    }
+
+    const users = await User.query().select(
+      'id',
+      'uuid',
+      'email',
+      'firstName',
+      'lastName',
+      'countryId',
+      'role'
+    )
+
+    return response.ok({ users })
+  }
+
+  public async show({ params, response }: HttpContext) {
+    const user = await User.findOrFail(params.id)
+    return response.ok({
+      user: {
+        id: user.id,
+        uuid: user.uuid,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        countryId: user.countryId,
+        role: user.role,
+      },
+    })
+  }
+
+  public async update({ params, request, response }: HttpContext) {
+    const payload = await request.validateUsing(updateUserValidator, {
+      meta: { userId: Number(params.id) },
+    })
+
+    const user = await User.findOrFail(params.id)
+    user.merge(payload)
+    await user.save()
+
+    return response.ok({
+      user: {
+        id: user.id,
+        uuid: user.uuid,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        countryId: user.countryId,
+        role: user.role,
+      },
+    })
+  }
+
+  public async destroy({ params, response }: HttpContext) {
+    const user = await User.findOrFail(params.id)
+    await user.delete()
+
+    return response.ok({ message: 'User deleted successfully' })
+  }
+}

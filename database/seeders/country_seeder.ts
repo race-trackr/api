@@ -4,7 +4,7 @@ import { BaseSeeder } from '@adonisjs/lucid/seeders'
 export default class extends BaseSeeder {
   static environment = ['development', 'testing']
   async run() {
-    await Country.createMany([
+    await Country.updateOrCreateMany('slug', [
       {
         name: 'France',
         slug: 'france',

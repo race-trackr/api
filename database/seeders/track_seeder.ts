@@ -67,7 +67,7 @@ export default class extends BaseSeeder {
       throw new Error('Country Thailande not found. Please run CountrySeeder first.')
     }
 
-    await Track.createMany([
+    await Track.updateOrCreateMany('slug', [
       {
         name: 'Nogaro',
         slug: 'nogaro',

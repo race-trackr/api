@@ -9,6 +9,8 @@ const UserVehiclesController = () => import('#controllers/user_vehicles_controll
 const TrackDaysController = () => import('#controllers/track_days_controller')
 const MaintenancesController = () => import('#controllers/maintenances_controller')
 const UserController = () => import('#controllers/user_controller')
+const AdminUsersController = () => import('#controllers/admin_users_controller')
+const MailerController = () => import('#controllers/mailer_controller')
 
 router.get('/', async ({ response }) => {
   return response.json({
@@ -58,17 +60,36 @@ router
   .prefix('/api/v1')
   .use(middleware.auth())
 
+// routes requiring authentication + role checks
+
+// Admin/owner – management of tracks & countries
+// Note: owner role is granted "super admin" privileges in the UI, so we
+// allow both admin and owner here (the original comment mentioned owner
+// only but the middleware was restricting to admin).
 router
   .group(() => {
-    // Administration des circuits (owner uniquement)
+    // Administration des circuits
     router.post('/tracks', [TracksController, 'store'])
     router.put('/tracks/:id', [TracksController, 'update'])
     router.delete('/tracks/:id', [TracksController, 'destroy'])
 
-    // Administration des pays (owner uniquement)
+    // Administration des pays
     router.post('/countries', [CountriesController, 'store'])
     router.put('/countries/:id', [CountriesController, 'update'])
     router.delete('/countries/:id', [CountriesController, 'destroy'])
   })
   .prefix('/api/v1')
-  .use([middleware.auth(), middleware.role({ roles: ['admin'] })])
+  .use([middleware.auth(), middleware.role({ roles: ['admin', 'owner'] })])
+
+// OWNER‑ONLY administration routes (accessible solely by the owner role)
+router
+  .group(() => {
+    router.get('/admin/users', [AdminUsersController, 'index'])
+    router.get('/admin/users/:id', [AdminUsersController, 'show'])
+    router.put('/admin/users/:id', [AdminUsersController, 'update'])
+    router.delete('/admin/users/:id', [AdminUsersController, 'destroy'])
+
+    router.post('/admin/mailer/send', [MailerController, 'send'])
+  })
+  .prefix('/api/v1')
+  .use([middleware.auth(), middleware.role({ roles: ['owner'] })])
