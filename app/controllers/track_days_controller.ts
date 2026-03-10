@@ -1,10 +1,11 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import TrackDay from '#models/track_day'
+import { DateTime } from 'luxon'
 
 export default class TrackDaysController {
   async index({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
-    const { trackId, vehicleId, limit, searchTerm, page, expand } = request.qs()
+    const { trackId, vehicleId, limit, searchTerm, page, expand, dateFilter } = request.qs()
 
     let query
     if (expand === 'false') {
@@ -50,6 +51,17 @@ export default class TrackDaysController {
         })
       }
       query.where('user_vehicle_id', vehicleId)
+    }
+
+    if (dateFilter === 'past' || dateFilter === 'upcoming') {
+      const today = DateTime.local().toISODate()
+      if (today) {
+        if (dateFilter === 'past') {
+          query.where('date', '<', today)
+        } else {
+          query.where('date', '>=', today)
+        }
+      }
     }
 
     if (limit && limit > 0) {
