@@ -4,10 +4,12 @@ import { updateUserValidator } from '#validators/user_validator'
 
 export default class AdminUsersController {
   public async index({ request, response }: HttpContext) {
-    const { emailsOnly, countOnly, page, limit } = request.qs()
+    const { emailsOnly, countOnly, role, page, limit } = request.qs()
 
     if (countOnly) {
-      const result = await User.query().count('* as total')
+      const query = User.query().count('* as total')
+      if (role) query.where('role', role)
+      const result = await query
       return response.ok({ total: Number(result[0].$extras.total) })
     }
 
@@ -47,6 +49,14 @@ export default class AdminUsersController {
     })
 
     const user = await User.findOrFail(params.id)
+
+    if (payload.role && payload.role !== 'owner' && user.role === 'owner') {
+      const result = await User.query().where('role', 'owner').count('* as total')
+      if (Number(result[0].$extras.total) <= 1) {
+        return response.forbidden({ message: 'Cannot remove the last owner' })
+      }
+    }
+
     user.merge(payload)
     await user.save()
 
@@ -65,6 +75,14 @@ export default class AdminUsersController {
 
   public async destroy({ params, response }: HttpContext) {
     const user = await User.findOrFail(params.id)
+
+    if (user.role === 'owner') {
+      const result = await User.query().where('role', 'owner').count('* as total')
+      if (Number(result[0].$extras.total) <= 1) {
+        return response.forbidden({ message: 'Cannot delete the last owner' })
+      }
+    }
+
     await user.delete()
     return response.noContent()
   }
