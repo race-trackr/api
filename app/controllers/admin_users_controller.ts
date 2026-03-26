@@ -4,25 +4,21 @@ import { updateUserValidator } from '#validators/user_validator'
 
 export default class AdminUsersController {
   public async index({ request, response }: HttpContext) {
-    // support lightweight fetch for autocomplete (only emails)
-    const emailsOnly = request.input('emailsOnly', false)
+    const { emailsOnly, page, limit } = request.qs()
 
     if (emailsOnly) {
-      const users = await User.query().select('email')
+      const users = await User.query().select('email').orderBy('email', 'asc')
       return response.ok({ users })
     }
 
-    const users = await User.query().select(
-      'id',
-      'uuid',
-      'email',
-      'firstName',
-      'lastName',
-      'countryId',
-      'role'
-    )
+    const pageNumber = Math.max(1, Number(page) || 1)
+    const limitNumber = Math.min(100, Math.max(1, Number(limit) || 50))
+    const users = await User.query()
+      .select('id', 'uuid', 'email', 'firstName', 'lastName', 'countryId', 'role')
+      .orderBy('id', 'asc')
+      .paginate(pageNumber, limitNumber)
 
-    return response.ok({ users })
+    return response.ok(users.toJSON())
   }
 
   public async show({ params, response }: HttpContext) {
@@ -65,7 +61,6 @@ export default class AdminUsersController {
   public async destroy({ params, response }: HttpContext) {
     const user = await User.findOrFail(params.id)
     await user.delete()
-
-    return response.ok({ message: 'User deleted successfully' })
+    return response.noContent()
   }
 }

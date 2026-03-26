@@ -1,157 +1,108 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import TrackDay from '#models/track_day'
+import UserVehicle from '#models/user_vehicle'
+import { createTrackdayValidator, updateTrackdayValidator } from '#validators/trackday_validator'
 import { DateTime } from 'luxon'
 
 export default class TrackDaysController {
+  private getFilterError(
+    expand: string | undefined,
+    filters: { searchTerm?: string; trackId?: string; vehicleId?: string }
+  ): string | null {
+    if (expand !== 'false') return null
+    const active = Object.entries(filters)
+      .filter(([, v]) => v !== undefined)
+      .map(([k]) => k)
+    if (active.length > 0) {
+      return `Cannot filter by [${active.join(', ')}] when expand is false`
+    }
+    return null
+  }
+
+  private applyFilters(
+    query: any,
+    { searchTerm, trackId, vehicleId }: { searchTerm?: string; trackId?: string; vehicleId?: string }
+  ) {
+    if (searchTerm) {
+      const sanitized = String(searchTerm).slice(0, 100)
+      query.whereHas('track', (sub: any) => sub.whereILike('name', `%${sanitized}%`))
+    }
+    if (trackId) query.where('track_id', trackId)
+    if (vehicleId) query.where('user_vehicle_id', vehicleId)
+  }
+
   async index({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
     const { trackId, vehicleId, limit, searchTerm, page, expand, dateFilter } = request.qs()
 
-    let query
-    if (expand === 'false') {
-      query = TrackDay.query().where('user_id', user.id).orderBy('date', 'desc')
-    } else {
-      query = TrackDay.query()
-        .where('user_id', user.id)
-        .preload('track', (sub_query) => sub_query.preload('country'))
-        .preload('vehicle')
-        .orderBy('date', 'desc')
-    }
+    const filterError = this.getFilterError(expand, { searchTerm, trackId, vehicleId })
+    if (filterError) return response.badRequest({ error: 'INVALID_REQUEST', message: filterError })
 
-    if (searchTerm) {
-      if (expand === 'false') {
-        // show error if expand is false and trackId is provided, cannot filter without loading relation
-        return response.json({
-          error: 'INVALID_REQUEST',
-          message: 'Cannot filter by searchTerm when expand is false',
-        })
-      }
-      query.whereHas('track', (sub_query) => {
-        sub_query.whereILike('name', `%${searchTerm}%`)
-      })
-    }
+    const query =
+      expand === 'false'
+        ? TrackDay.query().where('user_id', user.id).orderBy('date', 'desc')
+        : TrackDay.query()
+            .where('user_id', user.id)
+            .preload('track', (q) => q.preload('country'))
+            .preload('vehicle')
+            .orderBy('date', 'desc')
 
-    if (trackId) {
-      if (expand === 'false') {
-        // show error if expand is false and trackId is provided, cannot filter without loading relation
-        return response.json({
-          error: 'INVALID_REQUEST',
-          message: 'Cannot filter by trackId when expand is false',
-        })
-      }
-      query.where('track_id', trackId)
-    }
-
-    if (vehicleId) {
-      if (expand === 'false') {
-        // show error if expand is false and trackId is provided, cannot filter without loading relation
-        return response.json({
-          error: 'INVALID_REQUEST',
-          message: 'Cannot filter by vehicleId when expand is false',
-        })
-      }
-      query.where('user_vehicle_id', vehicleId)
-    }
+    this.applyFilters(query, { searchTerm, trackId, vehicleId })
 
     if (dateFilter === 'past' || dateFilter === 'upcoming') {
       const today = DateTime.local().toISODate()
-      if (today) {
-        if (dateFilter === 'past') {
-          query.where('date', '<', today)
-        } else {
-          query.where('date', '>=', today)
-        }
-      }
+      if (today) query.where('date', dateFilter === 'past' ? '<' : '>=', today)
     }
 
-    if (limit && limit > 0) {
-      const trackDays = await query.paginate(page || 1, limit)
-      return trackDays.toJSON()
-    }
-
-    const trackDays = await query
-    return response.ok({ data: trackDays })
+    const pageNumber = Math.max(1, Number(page) || 1)
+    const limitNumber = Math.min(100, Math.max(1, Number(limit) || 20))
+    const trackDays = await query.paginate(pageNumber, limitNumber)
+    return response.ok(trackDays.toJSON())
   }
 
   async store({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
-    const data = request.only([
-      'trackId',
-      'userVehicleId',
-      'date',
-      'weather',
-      'airTemperature',
-      'trackTemperature',
-      'trackCondition',
-      'note',
-      'bestLapTime',
-      'totalLaps',
-      'totalDistance',
-    ])
+    const data = await request.validateUsing(createTrackdayValidator)
 
-    const trackDay = await TrackDay.create({
-      ...data,
-      userId: user.id,
-    })
+    if (data.userVehicleId) {
+      const vehicle = await UserVehicle.query()
+        .where('id', data.userVehicleId)
+        .where('user_id', user.id)
+        .first()
+      if (!vehicle) {
+        return response.badRequest({ message: 'Vehicle not found or does not belong to you' })
+      }
+    }
 
-    await trackDay.load('track', (query) => query.preload('country'))
-    await trackDay.load('vehicle')
-    return response.created(trackDay)
+    const trackDay = await TrackDay.create({ ...data, userId: user.id })
+
+    const freshTrackDay = await TrackDay.query()
+      .where('id', trackDay.id)
+      .preload('track', (q) => q.preload('country'))
+      .preload('vehicle')
+      .firstOrFail()
+
+    return response.created(freshTrackDay)
   }
 
   async show({ auth, params, response, request }: HttpContext) {
-    const { id } = params
+    const user = auth.getUserOrFail()
     const { trackId, vehicleId, searchTerm, expand } = request.qs()
 
-    const user = auth.getUserOrFail()
-    let query
+    const filterError = this.getFilterError(expand, { searchTerm, trackId, vehicleId })
+    if (filterError) return response.badRequest({ error: 'INVALID_REQUEST', message: filterError })
 
-    if (expand === 'false') {
-      query = TrackDay.query().where('id', id).where('user_id', user.id)
-    } else {
-      query = TrackDay.query()
-        .where('id', id)
-        .where('user_id', user.id)
-        .preload('track', (sub_query) => sub_query.preload('country'))
-        .preload('vehicle')
-    }
+    const query =
+      expand === 'false'
+        ? TrackDay.query().where('id', params.id).where('user_id', user.id)
+        : TrackDay.query()
+            .where('id', params.id)
+            .where('user_id', user.id)
+            .preload('track', (q) => q.preload('country'))
+            .preload('vehicle')
 
-    if (searchTerm) {
-      if (expand === 'false') {
-        // show error if expand is false and trackId is provided, cannot filter without loading relation
-        return response.json({
-          error: 'INVALID_REQUEST',
-          message: 'Cannot filter by searchTerm when expand is false',
-        })
-      }
-      query.whereHas('track', (sub_query) => {
-        sub_query.whereILike('name', `%${searchTerm}%`)
-      })
-    }
-
-    if (trackId) {
-      if (expand === 'false') {
-        // show error if expand is false and trackId is provided, cannot filter without loading relation
-        return response.json({
-          error: 'INVALID_REQUEST',
-          message: 'Cannot filter by trackId when expand is false',
-        })
-      }
-      query.where('track_id', trackId)
-    }
-
-    if (vehicleId) {
-      if (expand === 'false') {
-        // show error if expand is false and trackId is provided, cannot filter without loading relation
-        return response.json({
-          error: 'INVALID_REQUEST',
-          message: 'Cannot filter by vehicleId when expand is false',
-        })
-      }
-      query.where('user_vehicle_id', vehicleId)
-    }
+    this.applyFilters(query, { searchTerm, trackId, vehicleId })
     const trackDay = await query.firstOrFail()
-
     return response.ok(trackDay)
   }
 
@@ -162,42 +113,42 @@ export default class TrackDaysController {
       .where('user_id', user.id)
       .firstOrFail()
 
-    const data = request.only([
-      'trackId',
-      'userVehicleId',
-      'date',
-      'weather',
-      'airTemperature',
-      'trackTemperature',
-      'trackCondition',
-      'note',
-      'chronos',
-      'bestLapTime',
-      'totalLaps',
-      'totalDistance',
-    ])
+    const data = await request.validateUsing(updateTrackdayValidator)
 
-    // convert chronos to JSON string if present
-    if (data.chronos) {
-      data.chronos = JSON.stringify(data.chronos)
-    }
-
-    // if bestLapTime exists and not present in chronos, add to chronos
-    if (data.bestLapTime) {
-      const chronos = data.chronos ? JSON.parse(data.chronos) : []
-      if (!chronos.find((c: { lapTime: string }) => c.lapTime === data.bestLapTime)) {
-        chronos.push({ lapTime: data.bestLapTime, isBest: true })
-        data.chronos = JSON.stringify(chronos)
+    if (data.userVehicleId) {
+      const vehicle = await UserVehicle.query()
+        .where('id', data.userVehicleId)
+        .where('user_id', user.id)
+        .first()
+      if (!vehicle) {
+        return response.badRequest({ message: 'Vehicle not found or does not belong to you' })
       }
     }
 
-    trackDay.merge(data)
+    const payload: Record<string, unknown> = { ...data }
+
+    if (payload.chronos) {
+      payload.chronos = JSON.stringify(payload.chronos)
+    }
+
+    if (data.bestLapTime) {
+      const chronosArray = payload.chronos ? JSON.parse(payload.chronos as string) : []
+      if (!chronosArray.find((c: { lapTime: string }) => c.lapTime === data.bestLapTime)) {
+        chronosArray.push({ lapTime: data.bestLapTime, isBest: true })
+        payload.chronos = JSON.stringify(chronosArray)
+      }
+    }
+
+    trackDay.merge(payload)
     await trackDay.save()
 
-    await trackDay.load('track', (query) => query.preload('country'))
-    await trackDay.load('vehicle')
+    const freshTrackDay = await TrackDay.query()
+      .where('id', trackDay.id)
+      .preload('track', (q) => q.preload('country'))
+      .preload('vehicle')
+      .firstOrFail()
 
-    return response.ok(trackDay)
+    return response.ok(freshTrackDay)
   }
 
   async destroy({ auth, params, response }: HttpContext) {

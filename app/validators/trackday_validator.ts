@@ -2,21 +2,33 @@ import vine from '@vinejs/vine'
 
 export const createTrackdayValidator = vine.compile(
   vine.object({
-    name: vine.string().minLength(3).maxLength(100),
-    date: vine.string().regex(/^\d{4}-\d{2}-\d{2}$/), // YYYY-MM-DD format
-    location: vine.string().minLength(3).maxLength(100).optional(),
-    description: vine.string().optional(),
+    trackId: vine.number().min(1),
+    userVehicleId: vine.number().min(1).optional(),
+    date: vine.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    weather: vine.enum(['clear', 'cloudy', 'rainy']).optional(),
+    airTemperature: vine.number().optional(),
+    trackTemperature: vine.number().optional(),
+    trackCondition: vine.enum(['wet', 'dry', 'moist']).optional(),
+    notes: vine.string().trim().maxLength(2000).optional(),
+    bestLapTime: vine.string().trim().maxLength(20).optional(),
+    totalLaps: vine.number().min(0).optional(),
+    totalDistance: vine.number().min(0).optional(),
   })
 )
 
 export const updateTrackdayValidator = vine.compile(
   vine.object({
-    name: vine.string().minLength(3).maxLength(100).optional(),
-    date: vine
-      .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/)
-      .optional(), // YYYY-MM-DD format
-    location: vine.string().minLength(3).maxLength(100).optional(),
-    description: vine.string().optional(),
+    trackId: vine.number().min(1).optional(),
+    userVehicleId: vine.number().min(1).optional(),
+    date: vine.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    weather: vine.enum(['clear', 'cloudy', 'rainy']).optional(),
+    airTemperature: vine.number().optional(),
+    trackTemperature: vine.number().optional(),
+    trackCondition: vine.enum(['wet', 'dry', 'moist']).optional(),
+    notes: vine.string().trim().maxLength(2000).optional(),
+    bestLapTime: vine.string().trim().maxLength(20).optional(),
+    totalLaps: vine.number().min(0).optional(),
+    totalDistance: vine.number().min(0).optional(),
+    chronos: vine.any().optional(),
   })
 )

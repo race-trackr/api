@@ -1,30 +1,25 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import UserVehicle from '#models/user_vehicle'
+import { createVehicleValidator, updateVehicleValidator } from '#validators/vehicle_validator'
 
 export default class UserVehiclesController {
-  async index({ auth, response }: HttpContext) {
+  async index({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
+    const { page, limit } = request.qs()
+
+    const pageNumber = Math.max(1, Number(page) || 1)
+    const limitNumber = Math.min(100, Math.max(1, Number(limit) || 20))
     const vehicles = await UserVehicle.query()
       .where('user_id', user.id)
       .orderBy('created_at', 'desc')
-    return response.ok(vehicles)
+      .paginate(pageNumber, limitNumber)
+    return response.ok(vehicles.toJSON())
   }
 
   async store({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
-    const data = request.only([
-      'name',
-      'slug',
-      'type',
-      'brand',
-      'model',
-      'year',
-      'licensePlate',
-      'details',
-      'photo',
-    ])
+    const data = await request.validateUsing(createVehicleValidator)
 
-    // create slug from name
     const slugBase = data.name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
@@ -35,13 +30,8 @@ export default class UserVehiclesController {
       slug = `${slugBase}-${count}`
       count++
     }
-    data.slug = slug
 
-    const vehicle = await UserVehicle.create({
-      ...data,
-      userId: user.id,
-    })
-
+    const vehicle = await UserVehicle.create({ ...data, userId: user.id, slug })
     return response.created(vehicle)
   }
 
@@ -63,18 +53,7 @@ export default class UserVehiclesController {
       .where('user_id', user.id)
       .firstOrFail()
 
-    const data = request.only([
-      'name',
-      'slug',
-      'type',
-      'brand',
-      'model',
-      'year',
-      'licensePlate',
-      'details',
-      'photo',
-    ])
-
+    const data = await request.validateUsing(updateVehicleValidator)
     vehicle.merge(data)
     await vehicle.save()
     return response.ok(vehicle)
