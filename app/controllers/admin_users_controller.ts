@@ -4,7 +4,12 @@ import { updateUserValidator } from '#validators/user_validator'
 
 export default class AdminUsersController {
   public async index({ request, response }: HttpContext) {
-    const { emailsOnly, page, limit } = request.qs()
+    const { emailsOnly, countOnly, page, limit } = request.qs()
+
+    if (countOnly) {
+      const result = await User.query().count('* as total')
+      return response.ok({ total: Number(result[0].$extras.total) })
+    }
 
     if (emailsOnly) {
       const users = await User.query().select('email').orderBy('email', 'asc')

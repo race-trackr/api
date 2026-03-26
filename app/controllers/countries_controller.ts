@@ -3,7 +3,14 @@ import Country from '#models/country'
 import { createCountryValidator, updateCountryValidator } from '#validators/country_validator'
 
 export default class CountriesController {
-  async index({ response }: HttpContext) {
+  async index({ request, response }: HttpContext) {
+    const { countOnly } = request.qs()
+
+    if (countOnly) {
+      const result = await Country.query().count('* as total')
+      return response.ok({ total: Number(result[0].$extras.total) })
+    }
+
     const countries = await Country.query().orderBy('name', 'asc')
     return response.ok(countries)
   }

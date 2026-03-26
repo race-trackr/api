@@ -6,7 +6,12 @@ import { createTrackValidator, updateTrackValidator } from '#validators/track_va
 
 export default class TracksController {
   async index({ request, response }: HttpContext) {
-    const { expand } = request.qs()
+    const { expand, countOnly } = request.qs()
+
+    if (countOnly) {
+      const result = await Track.query().count('* as total')
+      return response.ok({ total: Number(result[0].$extras.total) })
+    }
 
     if (expand === 'country') {
       const tracks = await Track.query().preload('country').orderBy('name', 'asc')
