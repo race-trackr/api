@@ -1,4 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import { DateTime } from 'luxon'
 import Maintenance from '#models/maintenance'
 import UserVehicle from '#models/user_vehicle'
 import {
@@ -36,7 +37,14 @@ export default class MaintenancesController {
       return response.badRequest({ message: 'Vehicle not found or does not belong to you' })
     }
 
-    const maintenance = await Maintenance.create({ ...data, userId: user.id })
+    const maintenance = await Maintenance.create({
+      ...data,
+      userId: user.id,
+      date: DateTime.fromISO(data.date),
+      nextMaintenanceDate: data.nextMaintenanceDate
+        ? DateTime.fromISO(data.nextMaintenanceDate)
+        : null,
+    })
 
     const freshMaintenance = await Maintenance.query()
       .where('id', maintenance.id)
@@ -75,7 +83,16 @@ export default class MaintenancesController {
       }
     }
 
-    maintenance.merge(data)
+    const { date, nextMaintenanceDate, ...rest } = data
+    maintenance.merge({
+      ...rest,
+      ...(date && { date: DateTime.fromISO(date) }),
+      ...(nextMaintenanceDate !== undefined && {
+        nextMaintenanceDate: nextMaintenanceDate
+          ? DateTime.fromISO(nextMaintenanceDate)
+          : null,
+      }),
+    })
     await maintenance.save()
 
     const freshMaintenance = await Maintenance.query()

@@ -74,7 +74,7 @@ export default class TrackDaysController {
       }
     }
 
-    const trackDay = await TrackDay.create({ ...data, userId: user.id })
+    const trackDay = await TrackDay.create({ ...data, userId: user.id, date: DateTime.fromISO(data.date) })
 
     const freshTrackDay = await TrackDay.query()
       .where('id', trackDay.id)
