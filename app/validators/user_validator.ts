@@ -20,5 +20,7 @@ export const updateUserValidator = vine.compile(
     countryId: vine.number().optional(),
     role: vine.enum(['owner', 'user']).optional(),
     preferences: vine.record(vine.any()).optional(),
+    currentPassword: vine.string().optional(),
+    newPassword: vine.string().minLength(8).maxLength(64).optional(),
   })
 )

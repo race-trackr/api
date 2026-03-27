@@ -1,4 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import hash from '@adonisjs/core/services/hash'
 import { updateUserValidator } from '#validators/user_validator'
 
 export default class UserController {
@@ -18,11 +19,32 @@ export default class UserController {
 
   async update({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
-    const payload = await request.validateUsing(updateUserValidator, {
-      meta: { userId: user.id },
-    })
+    const { currentPassword, newPassword, ...profileData } = await request.validateUsing(
+      updateUserValidator,
+      { meta: { userId: user.id } }
+    )
 
-    user.merge(payload)
+    if (currentPassword || newPassword) {
+      if (!currentPassword) {
+        return response.unprocessableEntity({
+          errors: [{ field: 'currentPassword', message: 'Current password is required to set a new password' }],
+        })
+      }
+      if (!newPassword) {
+        return response.unprocessableEntity({
+          errors: [{ field: 'newPassword', message: 'New password is required' }],
+        })
+      }
+      const isValid = await hash.verify(user.password, currentPassword)
+      if (!isValid) {
+        return response.unprocessableEntity({
+          errors: [{ field: 'currentPassword', message: 'Current password is incorrect' }],
+        })
+      }
+      user.password = await hash.make(newPassword)
+    }
+
+    user.merge(profileData)
     await user.save()
 
     return response.ok({
