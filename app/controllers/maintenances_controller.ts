@@ -68,7 +68,7 @@ export default class MaintenancesController {
   async show({ auth, params, response }: HttpContext) {
     const user = auth.getUserOrFail()
     const maintenance = await Maintenance.query()
-      .where('id', params.id)
+      .where('uuid', params.id)
       .where('user_id', user.id)
       .preload('vehicle')
       .firstOrFail()
@@ -78,7 +78,7 @@ export default class MaintenancesController {
   async update({ auth, params, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
     const maintenance = await Maintenance.query()
-      .where('id', params.id)
+      .where('uuid', params.id)
       .where('user_id', user.id)
       .firstOrFail()
 
@@ -117,7 +117,7 @@ export default class MaintenancesController {
   async destroy({ auth, params, response }: HttpContext) {
     const user = auth.getUserOrFail()
     const maintenance = await Maintenance.query()
-      .where('id', params.id)
+      .where('uuid', params.id)
       .where('user_id', user.id)
       .firstOrFail()
     await maintenance.delete()

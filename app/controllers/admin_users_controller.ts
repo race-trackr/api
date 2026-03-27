@@ -29,7 +29,7 @@ export default class AdminUsersController {
   }
 
   public async show({ params, response }: HttpContext) {
-    const user = await User.findOrFail(params.id)
+    const user = await User.query().where('uuid', params.id).firstOrFail()
     return response.ok({
       user: {
         id: user.id,
@@ -44,11 +44,11 @@ export default class AdminUsersController {
   }
 
   public async update({ params, request, response }: HttpContext) {
-    const payload = await request.validateUsing(updateUserValidator, {
-      meta: { userId: Number(params.id) },
-    })
+    const user = await User.query().where('uuid', params.id).firstOrFail()
 
-    const user = await User.findOrFail(params.id)
+    const payload = await request.validateUsing(updateUserValidator, {
+      meta: { userId: user.id },
+    })
 
     if (payload.role && payload.role !== 'owner' && user.role === 'owner') {
       const result = await User.query().where('role', 'owner').count('* as total')
@@ -74,7 +74,7 @@ export default class AdminUsersController {
   }
 
   public async destroy({ params, response }: HttpContext) {
-    const user = await User.findOrFail(params.id)
+    const user = await User.query().where('uuid', params.id).firstOrFail()
 
     if (user.role === 'owner') {
       const result = await User.query().where('role', 'owner').count('* as total')

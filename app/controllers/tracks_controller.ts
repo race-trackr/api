@@ -3,6 +3,7 @@ import Track from '#models/track'
 import app from '@adonisjs/core/services/app'
 import { cuid } from '@adonisjs/core/helpers'
 import { createTrackValidator, updateTrackValidator } from '#validators/track_validator'
+import logger from '@adonisjs/core/services/logger'
 
 export default class TracksController {
   async index({ request, response }: HttpContext) {
@@ -24,6 +25,20 @@ export default class TracksController {
 
   async store({ request, response }: HttpContext) {
     const data = await request.validateUsing(createTrackValidator)
+    // Create slug from name
+    const slugBase = data.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+
+    let slug = slugBase
+    let count = 1
+    while (await Track.query().where('slug', slug).first()) {
+      slug = `${slugBase}-${count}`
+      count++
+    }
+    data.slug = slug
+
     const track = await Track.create(data)
 
     const logo = request.file('logo', {
@@ -66,15 +81,15 @@ export default class TracksController {
   async show({ request, params, response }: HttpContext) {
     const { expand } = request.qs()
     if (expand === 'country') {
-      const track = await Track.query().where('id', params.id).preload('country').firstOrFail()
+      const track = await Track.query().where('uuid', params.id).preload('country').firstOrFail()
       return response.ok(track)
     }
-    const track = await Track.query().where('id', params.id).firstOrFail()
+    const track = await Track.query().where('uuid', params.id).firstOrFail()
     return response.ok(track)
   }
 
   async update({ params, request, response }: HttpContext) {
-    const track = await Track.findOrFail(params.id)
+    const track = await Track.query().where('uuid', params.id).firstOrFail()
     const data = await request.validateUsing(updateTrackValidator)
     track.merge(data)
 
@@ -115,7 +130,7 @@ export default class TracksController {
   }
 
   async destroy({ params, response }: HttpContext) {
-    const track = await Track.findOrFail(params.id)
+    const track = await Track.query().where('uuid', params.id).firstOrFail()
     await track.delete()
     return response.noContent()
   }
