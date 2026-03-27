@@ -21,6 +21,7 @@ export default class IndexSeeder extends BaseSeeder {
     await this.seed(await import('../country_seeder.js'))
     await this.seed(await import('../user_seeder.js'))
     await this.seed(await import('../track_seeder.js'))
+    await this.seed(await import('../vehicle_seeder.js'))
     await this.seed(await import('../trackday_seeder.js'))
     await this.seed(await import('../maintenance_seeder.js'))
   }
