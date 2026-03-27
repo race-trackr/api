@@ -16,7 +16,7 @@ export default class CountriesController {
   }
 
   async show({ params, response }: HttpContext) {
-    const country = await Country.query().where('uuid', params.id).firstOrFail()
+    const country = await Country.query().where('uuid', params.uuid).firstOrFail()
     return response.ok(country)
   }
 
@@ -27,7 +27,7 @@ export default class CountriesController {
   }
 
   async update({ params, request, response }: HttpContext) {
-    const country = await Country.query().where('uuid', params.id).firstOrFail()
+    const country = await Country.query().where('uuid', params.uuid).firstOrFail()
     const data = await request.validateUsing(updateCountryValidator)
     country.merge(data)
     await country.save()
@@ -35,7 +35,7 @@ export default class CountriesController {
   }
 
   async destroy({ params, response }: HttpContext) {
-    const country = await Country.query().where('uuid', params.id).firstOrFail()
+    const country = await Country.query().where('uuid', params.uuid).firstOrFail()
     await country.delete()
     return response.noContent()
   }

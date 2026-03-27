@@ -38,7 +38,7 @@ export default class UserVehiclesController {
   async show({ auth, params, response }: HttpContext) {
     const user = auth.getUserOrFail()
     const vehicle = await UserVehicle.query()
-      .where('uuid', params.id)
+      .where('uuid', params.uuid)
       .where('user_id', user.id)
       .preload('trackDays')
       .preload('maintenances')
@@ -49,7 +49,7 @@ export default class UserVehiclesController {
   async update({ auth, params, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
     const vehicle = await UserVehicle.query()
-      .where('uuid', params.id)
+      .where('uuid', params.uuid)
       .where('user_id', user.id)
       .firstOrFail()
 
@@ -62,7 +62,7 @@ export default class UserVehiclesController {
   async destroy({ auth, params, response }: HttpContext) {
     const user = auth.getUserOrFail()
     const vehicle = await UserVehicle.query()
-      .where('uuid', params.id)
+      .where('uuid', params.uuid)
       .where('user_id', user.id)
       .firstOrFail()
     await vehicle.delete()

@@ -32,8 +32,8 @@ router
     router.post('/auth/login', [AuthController, 'login'])
 
     // Consultation publique des circuits et pays
-    router.resource('countries', CountriesController).apiOnly().only(['index', 'show'])
-    router.resource('tracks', TracksController).apiOnly().only(['index', 'show'])
+    router.resource('countries', CountriesController).apiOnly().only(['index', 'show']).params({ countries: 'uuid' })
+    router.resource('tracks', TracksController).apiOnly().only(['index', 'show']).params({ tracks: 'uuid' })
   })
   .prefix('/api/v1')
 
@@ -49,13 +49,13 @@ router
     router.delete('/users/me', [UserController, 'delete'])
 
     // Véhicules utilisateur
-    router.resource('vehicles', UserVehiclesController).apiOnly()
+    router.resource('vehicles', UserVehiclesController).apiOnly().params({ vehicles: 'uuid' })
 
     // Journées piste
-    router.resource('trackdays', TrackDaysController).apiOnly()
+    router.resource('trackdays', TrackDaysController).apiOnly().params({ trackdays: 'uuid' })
 
     // Maintenances
-    router.resource('maintenances', MaintenancesController).apiOnly()
+    router.resource('maintenances', MaintenancesController).apiOnly().params({ maintenances: 'uuid' })
   })
   .prefix('/api/v1')
   .use(middleware.auth())
@@ -70,13 +70,13 @@ router
   .group(() => {
     // Administration des circuits
     router.post('/tracks', [TracksController, 'store'])
-    router.put('/tracks/:id', [TracksController, 'update'])
-    router.delete('/tracks/:id', [TracksController, 'destroy'])
+    router.put('/tracks/:uuid', [TracksController, 'update'])
+    router.delete('/tracks/:uuid', [TracksController, 'destroy'])
 
     // Administration des pays
     router.post('/countries', [CountriesController, 'store'])
-    router.put('/countries/:id', [CountriesController, 'update'])
-    router.delete('/countries/:id', [CountriesController, 'destroy'])
+    router.put('/countries/:uuid', [CountriesController, 'update'])
+    router.delete('/countries/:uuid', [CountriesController, 'destroy'])
   })
   .prefix('/api/v1')
   .use([middleware.auth(), middleware.role({ roles: ['admin', 'owner'] })])
@@ -85,9 +85,9 @@ router
 router
   .group(() => {
     router.get('/admin/users', [AdminUsersController, 'index'])
-    router.get('/admin/users/:id', [AdminUsersController, 'show'])
-    router.put('/admin/users/:id', [AdminUsersController, 'update'])
-    router.delete('/admin/users/:id', [AdminUsersController, 'destroy'])
+    router.get('/admin/users/:uuid', [AdminUsersController, 'show'])
+    router.put('/admin/users/:uuid', [AdminUsersController, 'update'])
+    router.delete('/admin/users/:uuid', [AdminUsersController, 'destroy'])
 
     router.post('/admin/mailer/send', [MailerController, 'send'])
   })

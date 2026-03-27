@@ -94,9 +94,9 @@ export default class TrackDaysController {
 
     const query =
       expand === 'false'
-        ? TrackDay.query().where('uuid', params.id).where('user_id', user.id)
+        ? TrackDay.query().where('uuid', params.uuid).where('user_id', user.id)
         : TrackDay.query()
-            .where('uuid', params.id)
+            .where('uuid', params.uuid)
             .where('user_id', user.id)
             .preload('track', (q) => q.preload('country'))
             .preload('vehicle')
@@ -109,7 +109,7 @@ export default class TrackDaysController {
   async update({ auth, params, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
     const trackDay = await TrackDay.query()
-      .where('uuid', params.id)
+      .where('uuid', params.uuid)
       .where('user_id', user.id)
       .firstOrFail()
 
@@ -154,7 +154,7 @@ export default class TrackDaysController {
   async destroy({ auth, params, response }: HttpContext) {
     const user = auth.getUserOrFail()
     const trackDay = await TrackDay.query()
-      .where('uuid', params.id)
+      .where('uuid', params.uuid)
       .where('user_id', user.id)
       .firstOrFail()
     await trackDay.delete()

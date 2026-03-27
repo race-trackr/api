@@ -3,7 +3,6 @@ import Track from '#models/track'
 import app from '@adonisjs/core/services/app'
 import { cuid } from '@adonisjs/core/helpers'
 import { createTrackValidator, updateTrackValidator } from '#validators/track_validator'
-import logger from '@adonisjs/core/services/logger'
 
 export default class TracksController {
   async index({ request, response }: HttpContext) {
@@ -81,15 +80,15 @@ export default class TracksController {
   async show({ request, params, response }: HttpContext) {
     const { expand } = request.qs()
     if (expand === 'country') {
-      const track = await Track.query().where('uuid', params.id).preload('country').firstOrFail()
+      const track = await Track.query().where('uuid', params.uuid).preload('country').firstOrFail()
       return response.ok(track)
     }
-    const track = await Track.query().where('uuid', params.id).firstOrFail()
+    const track = await Track.query().where('uuid', params.uuid).firstOrFail()
     return response.ok(track)
   }
 
   async update({ params, request, response }: HttpContext) {
-    const track = await Track.query().where('uuid', params.id).firstOrFail()
+    const track = await Track.query().where('uuid', params.uuid).firstOrFail()
     const data = await request.validateUsing(updateTrackValidator)
     track.merge(data)
 
@@ -130,7 +129,7 @@ export default class TracksController {
   }
 
   async destroy({ params, response }: HttpContext) {
-    const track = await Track.query().where('uuid', params.id).firstOrFail()
+    const track = await Track.query().where('uuid', params.uuid).firstOrFail()
     await track.delete()
     return response.noContent()
   }
