@@ -10,7 +10,7 @@ import {
 export default class MaintenancesController {
   async index({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
-    const { vehicle_id: vehicleId, page, limit } = request.qs()
+    const { vehicle_id: vehicleId, type, search, page, limit } = request.qs()
 
     const query = Maintenance.query()
       .where('user_id', user.id)
@@ -18,10 +18,21 @@ export default class MaintenancesController {
       .orderBy('date', 'desc')
 
     if (vehicleId) query.where('user_vehicle_id', vehicleId)
+    if (type) query.where('type', type)
+    if (search) query.whereILike('name', `%${search}%`)
+
+    const limitNumber = Number(limit)
+    if (!limitNumber || limitNumber <= 0) {
+      const all = await query.exec()
+      return response.ok({
+        data: all.map((r) => r.serialize()),
+        meta: { total: all.length, currentPage: 1, lastPage: 1, perPage: all.length, firstPage: 1 },
+      })
+    }
 
     const pageNumber = Math.max(1, Number(page) || 1)
-    const limitNumber = Math.min(100, Math.max(1, Number(limit) || 20))
-    const maintenances = await query.paginate(pageNumber, limitNumber)
+    const safeLimit = Math.min(100, limitNumber)
+    const maintenances = await query.paginate(pageNumber, safeLimit)
     return response.ok(maintenances.toJSON())
   }
 
