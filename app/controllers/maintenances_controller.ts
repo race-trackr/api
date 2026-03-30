@@ -10,14 +10,14 @@ import {
 export default class MaintenancesController {
   async index({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
-    const { vehicle_id: vehicleId, type, search, page, limit } = request.qs()
+    const { vehicle_uuid: vehicleUuid, type, search, page, limit } = request.qs()
 
     const query = Maintenance.query()
       .where('user_id', user.id)
       .preload('vehicle')
       .orderBy('date', 'desc')
 
-    if (vehicleId) query.where('user_vehicle_id', vehicleId)
+    if (vehicleUuid) query.whereHas('vehicle', (sub) => sub.where('uuid', vehicleUuid))
     if (type) query.where('type', type)
     if (search) query.whereILike('name', `%${search}%`)
 
