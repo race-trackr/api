@@ -50,7 +50,7 @@ export default class TrackDaysController {
     this.applyFilters(query, { searchTerm, trackId, vehicleId })
 
     if (dateFilter === 'past' || dateFilter === 'upcoming') {
-      const today = DateTime.local().toISODate()
+      const today = DateTime.utc().toISODate()
       if (today) query.where('date', dateFilter === 'past' ? '<' : '>=', today)
     }
 
@@ -127,16 +127,12 @@ export default class TrackDaysController {
 
     const payload: Record<string, unknown> = { ...data }
 
-    if (payload.chronos) {
-      payload.chronos = JSON.stringify(payload.chronos)
-    }
-
-    if (data.bestLapTime) {
-      const chronosArray = payload.chronos ? JSON.parse(payload.chronos as string) : []
-      if (!chronosArray.find((c: { lapTime: string }) => c.lapTime === data.bestLapTime)) {
+    if (data.chronos !== undefined || data.bestLapTime) {
+      const chronosArray: { lapTime: string; isBest?: boolean }[] = [...(data.chronos ?? [])]
+      if (data.bestLapTime && !chronosArray.find((c) => c.lapTime === data.bestLapTime)) {
         chronosArray.push({ lapTime: data.bestLapTime, isBest: true })
-        payload.chronos = JSON.stringify(chronosArray)
       }
+      payload.chronos = JSON.stringify(chronosArray)
     }
 
     trackDay.merge(payload)

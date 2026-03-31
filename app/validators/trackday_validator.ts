@@ -29,6 +29,13 @@ export const updateTrackdayValidator = vine.compile(
     bestLapTime: vine.string().trim().maxLength(20).optional(),
     totalLaps: vine.number().min(0).optional(),
     totalDistance: vine.number().min(0).optional(),
-    chronos: vine.any().optional(),
+    chronos: vine
+      .array(
+        vine.object({
+          lapTime: vine.string().trim().maxLength(20),
+          isBest: vine.boolean().optional(),
+        })
+      )
+      .optional(),
   })
 )

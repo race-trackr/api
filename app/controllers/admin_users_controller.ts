@@ -4,18 +4,13 @@ import { updateUserValidator } from '#validators/user_validator'
 
 export default class AdminUsersController {
   public async index({ request, response }: HttpContext) {
-    const { emailsOnly, countOnly, role, page, limit } = request.qs()
+    const { countOnly, role, page, limit } = request.qs()
 
     if (countOnly) {
       const query = User.query().count('* as total')
       if (role) query.where('role', role)
       const result = await query
       return response.ok({ total: Number(result[0].$extras.total) })
-    }
-
-    if (emailsOnly) {
-      const users = await User.query().select('email').orderBy('email', 'asc')
-      return response.ok({ users })
     }
 
     const pageNumber = Math.max(1, Number(page) || 1)
@@ -43,12 +38,17 @@ export default class AdminUsersController {
     })
   }
 
-  public async update({ params, request, response }: HttpContext) {
+  public async update({ params, request, response, auth }: HttpContext) {
+    const requestor = auth.getUserOrFail()
     const user = await User.query().where('uuid', params.uuid).firstOrFail()
 
     const payload = await request.validateUsing(updateUserValidator, {
       meta: { userId: user.id },
     })
+
+    if (payload.role === 'owner' && requestor.role !== 'owner') {
+      return response.forbidden({ message: 'Only an owner can assign the owner role' })
+    }
 
     if (payload.role && payload.role !== 'owner' && user.role === 'owner') {
       const result = await User.query().where('role', 'owner').count('* as total')

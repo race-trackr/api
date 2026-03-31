@@ -22,15 +22,13 @@ export default class MaintenancesController {
     if (search) query.whereILike('name', `%${search}%`)
 
     const limitNumber = Number(limit)
+    const pageNumber = Math.max(1, Number(page) || 1)
+
     if (!limitNumber || limitNumber <= 0) {
-      const all = await query.exec()
-      return response.ok({
-        data: all.map((r) => r.serialize()),
-        meta: { total: all.length, currentPage: 1, lastPage: 1, perPage: all.length, firstPage: 1 },
-      })
+      const maintenances = await query.paginate(pageNumber, 10000)
+      return response.ok(maintenances.toJSON())
     }
 
-    const pageNumber = Math.max(1, Number(page) || 1)
     const safeLimit = Math.min(100, limitNumber)
     const maintenances = await query.paginate(pageNumber, safeLimit)
     return response.ok(maintenances.toJSON())

@@ -11,6 +11,10 @@ export default class AuthController {
     const user = await User.create(data)
     const token = await User.accessTokens.create(user)
 
+    if (!token.value) {
+      return response.internalServerError({ message: 'Failed to generate access token' })
+    }
+
     return response.created({
       user: {
         id: user.uuid,
@@ -19,7 +23,7 @@ export default class AuthController {
         lastName: user.lastName,
         role: user.role,
       },
-      token: token.value!.release(),
+      token: token.value.release(),
     })
   }
 
@@ -35,6 +39,10 @@ export default class AuthController {
 
     const token = await User.accessTokens.create(user)
 
+    if (!token.value) {
+      return response.internalServerError({ message: 'Failed to generate access token' })
+    }
+
     return response.ok({
       user: {
         id: user.uuid,
@@ -43,7 +51,7 @@ export default class AuthController {
         lastName: user.lastName,
         role: user.role,
       },
-      token: token.value!.release(),
+      token: token.value.release(),
     })
   }
 
