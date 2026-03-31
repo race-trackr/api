@@ -13,7 +13,6 @@ type MaintenanceData = {
   cost?: number | null
   mileage?: number | null
   workshop?: string | null
-  nextMaintenanceDate?: DateTime | null
   nextMaintenanceMileage?: number | null
 }
 
@@ -48,7 +47,6 @@ export default class extends BaseSeeder {
       cost: 4800.0,
       mileage: 10000,
       workshop: 'Ferrari Paris Monceau',
-      nextMaintenanceDate: DateTime.fromISO('2026-11-01'),
       nextMaintenanceMileage: 20000,
     })
     await this.maintenanceFor('owner@hotmail.fr', 'ferrari-sf90-stradale-2022', {
@@ -77,7 +75,6 @@ export default class extends BaseSeeder {
       cost: 3200.0,
       mileage: 15000,
       workshop: 'Lamborghini Lyon',
-      nextMaintenanceDate: DateTime.fromISO('2026-09-15'),
     })
     await this.maintenanceFor('owner@hotmail.fr', 'lamborghini-huracan-sto-2021', {
       name: 'Remplacement disques et plaquettes carbone-céramique',
@@ -105,7 +102,6 @@ export default class extends BaseSeeder {
       cost: 520.0,
       mileage: 7500,
       workshop: 'Porsche Centre Paris',
-      nextMaintenanceDate: DateTime.fromISO('2025-12-14'),
     })
     await this.maintenanceFor('owner@hotmail.fr', 'mclaren-720s-gt3-2022', {
       name: 'Inspection GT3 pré-saison 2025',
@@ -124,7 +120,6 @@ export default class extends BaseSeeder {
       cost: 380.0,
       mileage: 6000,
       workshop: 'Honda Racing Service Paris',
-      nextMaintenanceDate: DateTime.fromISO('2025-10-05'),
     })
     await this.maintenanceFor('owner@hotmail.fr', 'ducati-panigale-v4s-2022', {
       name: 'Révision 12 000 km Panigale',
@@ -134,7 +129,6 @@ export default class extends BaseSeeder {
       cost: 890.0,
       mileage: 12000,
       workshop: 'Ducati Paris',
-      nextMaintenanceDate: DateTime.fromISO('2026-03-20'),
     })
     await this.maintenanceFor('owner@hotmail.fr', 'kawasaki-zx-10rr-2022', {
       name: 'Installation collecteur titane Akrapovic',
@@ -162,7 +156,6 @@ export default class extends BaseSeeder {
       cost: 210.0,
       mileage: 4500,
       workshop: 'Aprilia Racing Service',
-      nextMaintenanceDate: DateTime.fromISO('2025-07-25'),
     })
     await this.maintenanceFor('owner@hotmail.fr', 'alpine-a110-gt4-2022', {
       name: 'Préparation hivernale Alpine GT4',

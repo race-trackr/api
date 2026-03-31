@@ -15,12 +15,12 @@ const UserController = () => import('#controllers/user_controller')
 const AdminUsersController = () => import('#controllers/admin_users_controller')
 const MailerController = () => import('#controllers/mailer_controller')
 
-router.get('/', async ({ response }) => {
+router.get('/', async ({ response, request }) => {
   return response.json({
     name: 'Race Trackr API',
     version: '1.0.0',
     description: 'API de gestion de journées piste et maintenance de véhicules',
-    documentation: '/api',
+    api_url: request.protocol() + '://' + request.host() + '/api/v1',
   })
 })
 

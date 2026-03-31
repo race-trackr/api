@@ -39,9 +39,6 @@ export default class Maintenance extends BaseModel {
   @column()
   declare workshop: string | null
 
-  @column.date()
-  declare nextMaintenanceDate: DateTime | null
-
   @column()
   declare nextMaintenanceMileage: number | null
 

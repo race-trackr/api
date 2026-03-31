@@ -303,7 +303,7 @@ export const api = {
           vehicle_id: 'number (optional) - Filtrer par véhicule',
         },
         response:
-          '[{ id, userId, userVehicleId, name, date, type, details, cost, mileage, workshop, nextMaintenanceDate, nextMaintenanceMileage, vehicle: {...}, createdAt, updatedAt }]',
+          '[{ id, userId, userVehicleId, name, date, type, details, cost, mileage, workshop, nextMaintenanceMileage, vehicle: {...}, createdAt, updatedAt }]',
       },
       show: {
         method: 'GET',
@@ -311,7 +311,7 @@ export const api = {
         description: "Détails d'une maintenance",
         auth: true,
         response:
-          '{ id, userId, userVehicleId, name, date, type, details, cost, mileage, workshop, nextMaintenanceDate, nextMaintenanceMileage, vehicle: {...}, createdAt, updatedAt }',
+          '{ id, userId, userVehicleId, name, date, type, details, cost, mileage, workshop, nextMaintenanceMileage, vehicle: {...}, createdAt, updatedAt }',
       },
       create: {
         method: 'POST',
@@ -327,7 +327,6 @@ export const api = {
           cost: 'number (optional)',
           mileage: 'number (optional)',
           workshop: 'string (optional)',
-          nextMaintenanceDate: 'date (optional)',
           nextMaintenanceMileage: 'number (optional)',
         },
       },

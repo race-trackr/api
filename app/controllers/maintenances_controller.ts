@@ -10,16 +10,17 @@ import {
 export default class MaintenancesController {
   async index({ auth, request, response }: HttpContext) {
     const user = auth.getUserOrFail()
-    const { vehicle_uuid: vehicleUuid, type, search, page, limit } = request.qs()
+    const { vehicle_uuid: vehicleUuid, type, search, page, limit, start_date: startDate, order } = request.qs()
 
     const query = Maintenance.query()
       .where('user_id', user.id)
       .preload('vehicle')
-      .orderBy('date', 'desc')
+      .orderBy('date', order === 'asc' ? 'asc' : 'desc')
 
     if (vehicleUuid) query.whereHas('vehicle', (sub) => sub.where('uuid', vehicleUuid))
     if (type) query.where('type', type)
     if (search) query.whereILike('name', `%${search}%`)
+    if (startDate) query.where('date', '>=', startDate)
 
     const limitNumber = Number(limit)
     const pageNumber = Math.max(1, Number(page) || 1)
@@ -50,9 +51,6 @@ export default class MaintenancesController {
       ...data,
       userId: user.id,
       date: DateTime.fromISO(data.date),
-      nextMaintenanceDate: data.nextMaintenanceDate
-        ? DateTime.fromISO(data.nextMaintenanceDate)
-        : null,
     })
 
     const freshMaintenance = await Maintenance.query()
@@ -92,15 +90,10 @@ export default class MaintenancesController {
       }
     }
 
-    const { date, nextMaintenanceDate, ...rest } = data
+    const { date, ...rest } = data
     maintenance.merge({
       ...rest,
       ...(date && { date: DateTime.fromISO(date) }),
-      ...(nextMaintenanceDate !== undefined && {
-        nextMaintenanceDate: nextMaintenanceDate
-          ? DateTime.fromISO(nextMaintenanceDate)
-          : null,
-      }),
     })
     await maintenance.save()
 

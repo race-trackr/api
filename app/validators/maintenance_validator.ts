@@ -10,10 +10,6 @@ export const createMaintenanceValidator = vine.compile(
     cost: vine.number().min(0).optional(),
     mileage: vine.number().min(0).optional(),
     workshop: vine.string().trim().maxLength(200).optional(),
-    nextMaintenanceDate: vine
-      .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/)
-      .optional(),
     nextMaintenanceMileage: vine.number().min(0).optional(),
   })
 )
@@ -28,10 +24,6 @@ export const updateMaintenanceValidator = vine.compile(
     cost: vine.number().min(0).optional(),
     mileage: vine.number().min(0).optional(),
     workshop: vine.string().trim().maxLength(200).optional(),
-    nextMaintenanceDate: vine
-      .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/)
-      .optional(),
     nextMaintenanceMileage: vine.number().min(0).optional(),
   })
 )
