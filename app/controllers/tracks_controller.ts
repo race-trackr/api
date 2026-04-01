@@ -1,7 +1,6 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import Track from '#models/track'
 import app from '@adonisjs/core/services/app'
-import { cuid } from '@adonisjs/core/helpers'
 import { createTrackValidator, updateTrackValidator } from '#validators/track_validator'
 
 export default class TracksController {
@@ -46,7 +45,7 @@ export default class TracksController {
     })
     if (logo) {
       if (logo.isValid) {
-        const filename = `${cuid()}.${logo.extname}`
+        const filename = `${crypto.randomUUID()}.${logo.extname}`
         await logo.move(app.makePath('uploads/tracks/logos'), { name: filename, overwrite: true })
         track.logoUrl = logo.fileName!
         await track.save()
@@ -61,7 +60,7 @@ export default class TracksController {
     })
     if (trackImage) {
       if (trackImage.isValid) {
-        const filename = `${cuid()}.${trackImage.extname}`
+        const filename = `${crypto.randomUUID()}.${trackImage.extname}`
         await trackImage.move(app.makePath('uploads/tracks/layouts'), {
           name: filename,
           overwrite: true,
@@ -98,7 +97,7 @@ export default class TracksController {
     })
     if (logo) {
       if (logo.isValid) {
-        const filename = `${cuid()}.${logo.extname}`
+        const filename = `${crypto.randomUUID()}.${logo.extname}`
         await logo.move(app.makePath('uploads/tracks/logos'), { name: filename, overwrite: true })
         track.logoUrl = logo.fileName!
       } else {
@@ -112,7 +111,7 @@ export default class TracksController {
     })
     if (trackLayout) {
       if (trackLayout.isValid) {
-        const filename = `${cuid()}.${trackLayout.extname}`
+        const filename = `${crypto.randomUUID()}.${trackLayout.extname}`
         await trackLayout.move(app.makePath('uploads/tracks/layouts'), {
           name: filename,
           overwrite: true,

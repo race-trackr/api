@@ -1,12 +1,8 @@
 import { defineConfig } from '@adonisjs/cors'
 
 export default defineConfig({
-  enabled: true,
-  origin: (origin, _ctx) => {
-    // Autoriser localhost ou 127.0.0.1, peu importe le port
-    if (!origin) return false
-    return /^https?:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)
-  },
+  enabled: process.env.NODE_ENV !== 'test',
+  origin: ['http://localhost:3000', 'https://race-trackr.vercel.app', 'https://www.race-trackr.com'],
   methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'PATCH'],
   headers: true,
   exposeHeaders: [],
