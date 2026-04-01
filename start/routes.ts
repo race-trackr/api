@@ -1,9 +1,7 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 import { api } from '../api.js'
-
-const RATE_LIMIT_AUTH = { max: 10, windowMs: 15 * 60 * 1000 } // 10 req / 15 min
-const RATE_LIMIT_API = { max: 300, windowMs: 60 * 1000 } // 300 req / min
+import { apiThrottle } from '#start/limiter'
 
 const AuthController = () => import('#controllers/auth_controller')
 const CountriesController = () => import('#controllers/countries_controller')
@@ -22,23 +20,24 @@ router.get('/', async ({ response, request }) => {
     description: 'API de gestion de journées piste et maintenance de véhicules',
     api_url: request.protocol() + '://' + request.host() + '/api/v1',
   })
-})
+}).use(apiThrottle)
 
 router.get('/api/v1', async ({ response }) => {
   return response.json(api)
-})
+}).use(apiThrottle)
+
 // Routes publiques
 router
   .group(() => {
     // Auth
-    router.post('/auth/register', [AuthController, 'register']).use(middleware.throttle(RATE_LIMIT_AUTH))
-    router.post('/auth/login', [AuthController, 'login']).use(middleware.throttle(RATE_LIMIT_AUTH))
+    router.post('/auth/register', [AuthController, 'register']).use(apiThrottle)
+    router.post('/auth/login', [AuthController, 'login']).use(apiThrottle)
 
     // Consultation publique des circuits et pays
     router.resource('countries', CountriesController).apiOnly().only(['index', 'show']).params({ countries: 'uuid' })
     router.resource('tracks', TracksController).apiOnly().only(['index', 'show']).params({ tracks: 'uuid' })
   })
-  .prefix('/api/v1')
+  .prefix('/api/v1').use(apiThrottle)
 
 // Routes protégées
 router
@@ -61,7 +60,7 @@ router
     router.resource('maintenances', MaintenancesController).apiOnly().params({ maintenances: 'uuid' })
   })
   .prefix('/api/v1')
-  .use([middleware.auth(), middleware.throttle(RATE_LIMIT_API)])
+  .use([middleware.auth(), apiThrottle])
 
 // routes requiring authentication + role checks
 
@@ -82,7 +81,7 @@ router
     router.delete('/countries/:uuid', [CountriesController, 'destroy'])
   })
   .prefix('/api/v1')
-  .use([middleware.auth(), middleware.role({ roles: ['admin', 'owner'] }), middleware.throttle(RATE_LIMIT_API)])
+  .use([middleware.auth(), middleware.role({ roles: ['admin', 'owner'] }), apiThrottle])
 
 // OWNER‑ONLY administration routes (accessible solely by the owner role)
 router
@@ -95,4 +94,4 @@ router
     router.post('/admin/mailer/send', [MailerController, 'send'])
   })
   .prefix('/api/v1')
-  .use([middleware.auth(), middleware.role({ roles: ['owner'] }), middleware.throttle(RATE_LIMIT_API)])
+  .use([middleware.auth(), middleware.role({ roles: ['owner'] }), apiThrottle])
